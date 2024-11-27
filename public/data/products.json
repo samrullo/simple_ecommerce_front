@@ -1,0 +1,5 @@
+[
+  { "id": 0, "name": "Apple", "category": "Electronics", "price": "500000" },
+  { "id": 1, "name": "Watermelon", "category": "Food", "price": "500" },
+  { "id": 2, "name": "Pullover", "category": "Clothes", "price": "1000" }
+]
