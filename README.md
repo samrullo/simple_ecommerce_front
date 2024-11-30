@@ -1,5 +1,7 @@
 # React Starter tempalte
 This is a react starter template that can boost a typical react web app development.
+To use React you first need to install node.js.
+Then by running ```npx create-react-app my-app``` you can create your react application.
 
 This starter template will present an oversimplified web site that demonstrates
 
