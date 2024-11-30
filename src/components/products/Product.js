@@ -1,11 +1,14 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import DataTable from "../DataTable";
 
 const Product = () => {
+  const navigate = useNavigate();
   let { state = {} } = useLocation();
   let { timestamp } = state ?? {};
   const [products, setProducts] = useState([]);
+
   useEffect(() => {
     const getProducts = async () => {
       const response = await fetch("data/products.json");
@@ -24,6 +27,18 @@ const Product = () => {
     }
   }, [timestamp]);
 
+  const [selectedRowData, setSelectedRowData] = useState(null);
+
+  useEffect(() => {
+    if (selectedRowData) {
+      navigate(`/products/edit/${selectedRowData.id}`);
+    }
+  }, [selectedRowData]);
+
+  const handleRowClick = (event) => {
+    setSelectedRowData(event.data);
+  };
+
   return (
     <>
       <h1>Products</h1>
@@ -31,13 +46,16 @@ const Product = () => {
         New
       </Link>
       <Outlet />
-      {products.map((product) => {
-        return (
-          <p key={product.id}>
-            {product.name} {product.category} {product.price}
-          </p>
-        );
-      })}
+      {products.length === 0 ? (
+        <p>No products defined yet</p>
+      ) : (
+        <DataTable
+          data={products}
+          hiddenColumns={["id"]}
+          width_pct={100}
+          onRowClick={handleRowClick}
+        />
+      )}
     </>
   );
 };

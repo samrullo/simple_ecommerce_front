@@ -88,7 +88,7 @@ One of the Routes element points to a special component called ```Outlet```.
 # Forms
 Forms are essential to web application. Whenever we want to give the user ability to add new resources or edit them we have to present them with generic form and form fields such as ```inputs``` and ```selects```.
 
-Below is the code for a ```FormField``` component. This component gives ability to define many types of ```input``` fields (text, number) based on ```fieldType``` as well as ```Select``` field with many options available for selection.
+Below is the code for a ```FormField``` component. This component gives ability to define many types of ```input``` fields (text, number) based on ```fieldType``` as well as ```Select``` field with many options available for selection. To use ```Select``` field you have to install ```react-select``` library.
 
 You can see this components takes field label, type, value and value setter as arguments and renders the appropriate form field based on these arguments.
 
@@ -172,3 +172,32 @@ const GenericForm = ({ formFields, onFormSubmit }) => {
 
 export default GenericForm;
 ```
+
+# Tables
+It is a common practice to render tabular data in a nice filterable table. I used ```ag-grid-react``` to show data as a table. ```ag-grid-react``` library provides ```AgGridReact``` component that allows you to render tabular data. Below is how you define this component.
+
+
+```javascript
+import {AgGridReact} from "ag-grid-react";
+
+const DataTable = ()=>{
+  ...
+  return (
+     <div className="container mt-5">
+      <div
+        className="ag-theme-material"
+        style={{ height: "400px", width: `${width_pct}%` }}
+      >
+        <AgGridReact
+          columnDefs={columnDefs}
+          rowData={rowData}
+          onFilterChanged={handleFilterChange}
+          onRowClicked={onRowClick}
+        ></AgGridReact>
+      </div>
+    </div>
+  )
+}
+```
+
+Within this repository you will find ```DataTable``` component that uses ```AgGridReact``` to render tabular data.
