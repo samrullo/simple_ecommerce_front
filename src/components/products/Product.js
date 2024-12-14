@@ -17,7 +17,7 @@ const Product = () => {
       localStorage.setItem("products", JSON.stringify(products));
     };
 
-    if (localStorage.getItem("products") !== undefined) {
+    if (localStorage.getItem("products") !== undefined && localStorage.getItem("products") !== null) {
       console.log(`will set products from local storage`);
       const productsInStorage = JSON.parse(localStorage.getItem("products"));
       setProducts(productsInStorage);
@@ -46,7 +46,7 @@ const Product = () => {
         New
       </Link>
       <Outlet />
-      {products.length === 0 ? (
+      {products==null || products.length === 0 ? (
         <p>No products defined yet</p>
       ) : (
         <DataTable
