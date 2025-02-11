@@ -8,6 +8,7 @@ import Contact from "./contacts/Contact";
 import ContactNew from "./contacts/ContactNew";
 import ContactEdit from "./contacts/ContactEdit";
 import AboutUs from "./AboutUs";
+import Login from "./login/Login"
 
 const AppRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const AppRoutes = () => {
         </Route>
       </Route>
       <Route path="/about" element={<AboutUs />} />
+      <Route path="/login" element={<Login/>} />
     </Routes>
   );
 };

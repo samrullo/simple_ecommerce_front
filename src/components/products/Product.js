@@ -1,28 +1,37 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import DataTable from "../DataTable";
+import AppContext from "../../AppContext";
 
 const Product = () => {
   const navigate = useNavigate();
   let { state = {} } = useLocation();
   let { timestamp } = state ?? {};
   const [products, setProducts] = useState([]);
+  const { isAuthenticated } = useContext(AppContext);
 
   useEffect(() => {
     const getProducts = async () => {
-      const response = await fetch("data/products.json");
-      const data = await response.json();
-      await setProducts(data);
-      localStorage.setItem("products", JSON.stringify(products));
-    };
+      try {
+        const token = localStorage.getItem("access_token");
+        const response = await fetch(
+          "http://localhost:8000/api/v1/api/product/",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const data = await response.json();
+        const results = await data["results"];        
 
-    if (localStorage.getItem("products") !== undefined && localStorage.getItem("products") !== null) {
-      console.log(`will set products from local storage`);
-      const productsInStorage = JSON.parse(localStorage.getItem("products"));
-      setProducts(productsInStorage);
+        setProducts(results);
+        console.log(`data is ${data}, results is ${results}`);
+        console.log(`products data is ${products}`);
+      } catch (error) {
+        console.log(`Error while fetching products ${error}`);
+      }
+    };
+    if (!isAuthenticated) {
+      navigate("/login");
     } else {
-      console.log(`will set product from json file`);
       getProducts();
     }
   }, [timestamp]);
@@ -46,7 +55,7 @@ const Product = () => {
         New
       </Link>
       <Outlet />
-      {products==null || products.length === 0 ? (
+      {products == null || products.length === 0 ? (
         <p>No products defined yet</p>
       ) : (
         <DataTable
