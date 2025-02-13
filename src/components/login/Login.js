@@ -8,7 +8,8 @@ import GenericNewData from "../GenericDataComponents/GenericNewData";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setFlashMessages, setIsAuthenticated } = useContext(AppContext);
+  const { setFlashMessages, setIsAuthenticated, isAuthenticated } =
+    useContext(AppContext);
 
   const handleLogin = async (e) => {
     try {
@@ -21,7 +22,8 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
       if (!response.ok) {
-        throw new Error("Login failed!");
+        const error_response = await response.json()
+        throw new Error(`Login failed! ${JSON.stringify(error_response)}`);
       }
 
       const data = await response.json();
@@ -33,8 +35,8 @@ const Login = () => {
       setIsAuthenticated(true);
       setFlashMessages([{ category: "success", message: "Successful Login!" }]);
     } catch (error) {
-      console.log(`Error duging login : ${error}`);
-      setFlashMessages([{ category: "danger", message: "Login failed!" }]);
+      console.log(`Error during login : ${error}`);
+      setFlashMessages([{ category: "danger", message: `Error during login : ${error}` }]);
     }
   };
 
@@ -55,11 +57,15 @@ const Login = () => {
 
   return (
     <>
-      <GenericNewData
-        title="Login"
-        formFields={formFields}
-        handleNewData={handleLogin}
-      />
+      {isAuthenticated ? (
+        <p>You're already logged in</p>
+      ) : (
+        <GenericNewData
+          title="Login"
+          formFields={formFields}
+          handleNewData={handleLogin}
+        />
+      )}
     </>
   );
 };

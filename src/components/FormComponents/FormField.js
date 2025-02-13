@@ -7,13 +7,11 @@ const FormField = ({
   setFieldValue,
   selectOptions,
 }) => {
-  
-  
   const handleSelectOnChange = (selectedOption) => {
     setFieldValue(selectedOption);
   };
   if (fieldType === "select") {
-    console.log(`we have received ${selectOptions.length} select options`)
+    console.log(`we have received ${selectOptions.length} select options`);
     return (
       <div className="form-group">
         <label>{fieldLabel}</label>
@@ -25,6 +23,21 @@ const FormField = ({
           isSearchable
           className="form-control"
         />
+      </div>
+    );
+  } else if (fieldType === "checkbox") {
+    return (
+      <div className="form-group">
+        <label>
+          <input
+            type={fieldType}
+            checked={fieldValue}
+            onChange={(e) => {
+              setFieldValue(e.target.checked);
+            }}
+          />
+          {fieldLabel}
+        </label>
       </div>
     );
   } else {

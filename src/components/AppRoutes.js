@@ -9,6 +9,7 @@ import ContactNew from "./contacts/ContactNew";
 import ContactEdit from "./contacts/ContactEdit";
 import AboutUs from "./AboutUs";
 import Login from "./login/Login"
+import Register from "./login/Register";
 
 const AppRoutes = () => {
   return (
@@ -26,6 +27,7 @@ const AppRoutes = () => {
       </Route>
       <Route path="/about" element={<AboutUs />} />
       <Route path="/login" element={<Login/>} />
+      <Route path="/register" element={<Register/>} />
     </Routes>
   );
 };

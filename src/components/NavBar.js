@@ -20,8 +20,8 @@ const NavBar = ({ title }) => {
   console.log(`anotherDummyAppVariable value is ${anotherDummyAppVariable}`);
 
   const onLogout = async () => {
-    const response = await axios.post(LOGOUT_ENDPOINT)
-    console.log(`Logout post result : ${JSON.stringify(response.data)}`) 
+    const response = await axios.post(LOGOUT_ENDPOINT);
+    console.log(`Logout post result : ${JSON.stringify(response.data)}`);
     handleLogout();
     navigate("/");
   };
@@ -55,9 +55,14 @@ const NavBar = ({ title }) => {
               Logout
             </a>
           ) : (
-            <Link to="/login" className="nav-link">
-              Login
-            </Link>
+            <>
+              <Link to="/login" className="nav-link">
+                Login
+              </Link>
+              <Link to="/register" className="nav-link">
+                Register
+              </Link>
+            </>
           )}
         </div>
       </div>
