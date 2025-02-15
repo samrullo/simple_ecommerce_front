@@ -8,8 +8,10 @@ import Contact from "./contacts/Contact";
 import ContactNew from "./contacts/ContactNew";
 import ContactEdit from "./contacts/ContactEdit";
 import AboutUs from "./AboutUs";
-import Login from "./login/Login"
-import Register from "./login/Register";
+import Login from "./user_management/Login"
+import Register from "./user_management/Register";
+import EmailNotVerified from "./user_management/EmailNotVerified";
+import Profile from "./user_management/Profile";
 
 const AppRoutes = () => {
   return (
@@ -28,6 +30,8 @@ const AppRoutes = () => {
       <Route path="/about" element={<AboutUs />} />
       <Route path="/login" element={<Login/>} />
       <Route path="/register" element={<Register/>} />
+      <Route path="/email_unverified" element={<EmailNotVerified/>} />
+      <Route path="/profile" element={<Profile/>} />
     </Routes>
   );
 };

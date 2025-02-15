@@ -1,30 +1,20 @@
 import React from "react";
 import { useContext } from "react";
 import AppContext from "../AppContext";
-import { Link, useNavigate } from "react-router-dom";
-import { LOGOUT_ENDPOINT } from "./ApiUtils/ApiEndpoints";
-import axios from "axios";
+import { Link } from "react-router-dom";
+import Logout from "./user_management/Logout";
 
 const NavBar = ({ title }) => {
-  const navigate = useNavigate();
   const {
     dummyAppVariable,
-    setDummyAppVariable,
+
     anotherDummyAppVariable,
-    setAnotherDummyAppVariable,
+
     isAuthenticated,
-    handleLogout,
   } = useContext(AppContext);
 
   console.log(`dummyAppVariable value is ${dummyAppVariable}`);
   console.log(`anotherDummyAppVariable value is ${anotherDummyAppVariable}`);
-
-  const onLogout = async () => {
-    const response = await axios.post(LOGOUT_ENDPOINT);
-    console.log(`Logout post result : ${JSON.stringify(response.data)}`);
-    handleLogout();
-    navigate("/");
-  };
 
   return (
     <nav className="navbar navbar-expand-lg bg-light navbar-light">
@@ -51,9 +41,12 @@ const NavBar = ({ title }) => {
             About Us
           </Link>
           {isAuthenticated ? (
-            <a className="nav-link" onClick={onLogout} href="#">
-              Logout
-            </a>
+            <>
+              <Logout />
+              <Link to="/profile" className="nav-link">
+                Profile
+              </Link>
+            </>
           ) : (
             <>
               <Link to="/login" className="nav-link">

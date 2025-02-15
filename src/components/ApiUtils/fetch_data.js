@@ -7,14 +7,10 @@ export const fetchResource = async (apiEndPoint, resourceName) => {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },
     });
-    const resourceData = await response.data;
-    console.log(
-      `successfully fetched ${resourceName} ${JSON.stringify(resourceData)}`
-    );
-    return resourceData;
+    console.log(`Successfully fetched ${resourceName}:`, response.data);
+    return response.data;
   } catch (error) {
-    console.log(
-      `error while fetching ${resourceName} resources for api EndPoint ${apiEndPoint} : ${error}`
-    );
+    console.error(`Error fetching ${resourceName} from ${apiEndPoint}:`, error);
+    return null;
   }
 };

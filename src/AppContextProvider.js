@@ -16,12 +16,9 @@ const AppContextProvider = ({ children }) => {
   // isAuthenticated or not
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    setIsAuthenticated(false);
-    setFlashMessages([{ category: "success", message: "Logout successful" }]);
-  };
+  const [email, setEmail] = useState("");
+  const [userInfo, setUserInfo] = useState({});
+  const [emailNotVerified, setEmailNotVerified] = useState(false);
 
   const contextValues = {
     dummyAppVariable,
@@ -32,7 +29,10 @@ const AppContextProvider = ({ children }) => {
     setFlashMessages,
     isAuthenticated,
     setIsAuthenticated,
-    handleLogout,
+    emailNotVerified,
+    setEmailNotVerified,
+    userInfo,
+    setUserInfo,
   };
 
   return (

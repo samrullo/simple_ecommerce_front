@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState, useContext } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import DataTable from "../DataTable";
+import DataTable from "../GenericDataComponents/DataTable";
 import AppContext from "../../AppContext";
 
 const Product = () => {

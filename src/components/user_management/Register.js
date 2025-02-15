@@ -7,7 +7,8 @@ import GenericNewData from "../GenericDataComponents/GenericNewData";
 import AppContext from "../../AppContext";
 
 const Register = () => {
-  const { setFlashMessages } = useContext(AppContext);
+  const navigate = useNavigate();
+  const { setFlashMessages, setEmailNotVerified } = useContext(AppContext);
 
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -49,13 +50,15 @@ const Register = () => {
       setFlashMessages([
         {
           category: "success",
-          message: `Registration successful! ${posted_data}`,
+          message: `Registration successful! ${JSON.stringify(posted_data)}`,
         },
       ]);
+      setEmailNotVerified(true);
+      navigate("/email_unverified", { state: { email: email } });
     } catch (error) {
       console.log(`Error while registering : ${error}`);
       setFlashMessages([
-        { category: "danger", message: "Registration failed!" },
+        { category: "danger", message: `Registration failed! ${error}` },
       ]);
     }
   };
