@@ -3,6 +3,8 @@ import { useEffect, useState, useContext } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
 import AppContext from "../../AppContext";
+import { fetchResource } from "../ApiUtils/fetch_data";
+import { PRODUCTS_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 
 const Product = () => {
   const navigate = useNavigate();
@@ -14,17 +16,19 @@ const Product = () => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const token = localStorage.getItem("access_token");
-        const response = await fetch(
-          "http://localhost:8000/api/v1/api/product/",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        const data = await response.json();
-        const results = await data["results"];        
+        const data = await fetchResource(PRODUCTS_ENDPOINT, "products");
 
-        setProducts(results);
-        console.log(`data is ${data}, results is ${results}`);
-        console.log(`products data is ${products}`);
+        setProducts(
+          data.map((product) => {
+            return {
+              ...product,
+              category: product.category.name,
+              brand: product.brand.name,
+              tags: product.tags.map((tag) => tag.name).join(","),
+            };
+          })
+        );
+        console.log(`data is ${JSON.stringify(data)}`);
       } catch (error) {
         console.log(`Error while fetching products ${error}`);
       }
