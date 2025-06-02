@@ -12,6 +12,8 @@ import Login from "./user_management/Login"
 import Register from "./user_management/Register";
 import EmailNotVerified from "./user_management/EmailNotVerified";
 import Profile from "./user_management/Profile";
+import ForgotPassword from "./user_management/ForgotPassword";
+
 
 const AppRoutes = () => {
   return (
@@ -32,6 +34,7 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register/>} />
       <Route path="/email_unverified" element={<EmailNotVerified/>} />
       <Route path="/profile" element={<Profile/>} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
     </Routes>
   );
 };

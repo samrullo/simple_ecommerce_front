@@ -3,6 +3,7 @@ import { useState } from "react";
 import AppContext from "../../AppContext";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { LOGIN_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 import GenericNewData from "../GenericDataComponents/GenericNewData";
 
@@ -94,11 +95,16 @@ const Login = () => {
           </p>
         </>
       ) : (
-        <GenericNewData
-          title="Login"
-          formFields={formFields}
-          handleNewData={handleLogin}
-        />
+        <>
+          <GenericNewData
+            title="Login"
+            formFields={formFields}
+            handleNewData={handleLogin}
+          />
+          <div style={{ marginTop: "1rem" }}>
+            <Link to="/forgot-password">Forgot your password?</Link>
+          </div>
+        </>
       )}
     </>
   );
