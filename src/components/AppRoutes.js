@@ -8,12 +8,12 @@ import Contact from "./contacts/Contact";
 import ContactNew from "./contacts/ContactNew";
 import ContactEdit from "./contacts/ContactEdit";
 import AboutUs from "./AboutUs";
-import Login from "./user_management/Login"
+import Login from "./user_management/Login";
 import Register from "./user_management/Register";
 import EmailNotVerified from "./user_management/EmailNotVerified";
 import Profile from "./user_management/Profile";
 import ForgotPassword from "./user_management/ForgotPassword";
-
+import ResetPasswordConfirm from "./user_management/ResetPasswordConfirm"; // ✅ NEW IMPORT
 
 const AppRoutes = () => {
   return (
@@ -30,11 +30,15 @@ const AppRoutes = () => {
         </Route>
       </Route>
       <Route path="/about" element={<AboutUs />} />
-      <Route path="/login" element={<Login/>} />
-      <Route path="/register" element={<Register/>} />
-      <Route path="/email_unverified" element={<EmailNotVerified/>} />
-      <Route path="/profile" element={<Profile/>} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/email_unverified" element={<EmailNotVerified />} />
+      <Route path="/profile" element={<Profile />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route
+        path="/reset-password-confirm/:uid/:token"
+        element={<ResetPasswordConfirm />}
+      />
     </Routes>
   );
 };
