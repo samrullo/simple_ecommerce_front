@@ -1,66 +1,133 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import GenericNewData from "../GenericDataComponents/GenericNewData";
+import AppContext from "../../AppContext";
+import { useApi } from "../hooks/useApi";
+import { CREATE_PRODUCT_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 
 const ProductNew = () => {
+  const {get,put,post,patch,del}=useApi()
   const navigate = useNavigate();
-  const [newProductName, setNewProductName] = useState("");
-  const [newProductCategory, setNewProductCategory] = useState("");
-  const [newProductPrice, setNewProductPrice] = useState(0);
+  const { userInfo, setFlashMessages } = useContext(AppContext);
 
-  const categories = ["Electronics", "Food", "Clothes"];
-  const categorySelectOptions = categories.map((category) => {
-    return { value: category, label: category };
-  });
+  const [name, setName] = useState("");
+  const [sku, setSku] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState(1);
+  const [categoryName, setCategoryName] = useState("");
+  const [brandName, setBrandName] = useState("");
+  const [tagsText, setTagsText] = useState("");
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleNewData = (e) => {
-    e.preventDefault();
-    const products = JSON.parse(localStorage.getItem("products"));
-    products.push({
-      id: products.length,
-      name: newProductName,
-      category: newProductCategory.value,
-      price: newProductPrice,
-    });
-
-    localStorage.setItem("products", JSON.stringify(products));
-    navigate("/products", {
-      replace: true,
-      state: { timestamp: new Date().getTime() },
-    });
-  };
+  if (!userInfo?.is_staff && !userInfo?.is_superuser) {
+    return <p>You are not authorized to create products.</p>;
+  }
 
   const formFields = [
     {
       fieldType: "text",
       fieldLabel: "Name",
-      fieldValue: newProductName,
-      setFieldValue: setNewProductName,
+      fieldValue: name,
+      setFieldValue: setName,
     },
     {
-      fieldType: "select",
-      fieldLabel: "Category",
-      fieldValue: newProductCategory,
-      setFieldValue: setNewProductCategory,
-      selectOptions: categorySelectOptions,
+      fieldType: "text",
+      fieldLabel: "SKU",
+      fieldValue: sku,
+      setFieldValue: setSku,
+    },
+    {
+      fieldType: "textarea",
+      fieldLabel: "Description",
+      fieldValue: description,
+      setFieldValue: setDescription,
     },
     {
       fieldType: "number",
       fieldLabel: "Price",
-      fieldValue: newProductPrice,
-      setFieldValue: setNewProductPrice,
+      fieldValue: price,
+      setFieldValue: setPrice,
+    },
+    {
+      fieldType: "number",
+      fieldLabel: "Initial Inventory (Stock)",
+      fieldValue: stock,
+      setFieldValue: setStock,
+    },
+    {
+      fieldType: "text",
+      fieldLabel: "Category",
+      fieldValue: categoryName,
+      setFieldValue: setCategoryName,
+    },
+    {
+      fieldType: "text",
+      fieldLabel: "Brand",
+      fieldValue: brandName,
+      setFieldValue: setBrandName,
+    },
+    {
+      fieldType: "text",
+      fieldLabel: "Tags (comma-separated)",
+      fieldValue: tagsText,
+      setFieldValue: setTagsText,
+    },
+    {
+      fieldType: "file",
+      fieldLabel: "Image",
+      setFieldValue: setImage,
     },
   ];
 
+  const handleNewData = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("sku", sku);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("stock", stock);
+    formData.append("category_name", categoryName);
+    formData.append("brand_name", brandName);
+    formData.append("tags", tagsText);
+    if (image) formData.append("image", image);
+
+    try {
+      await post(CREATE_PRODUCT_ENDPOINT, formData, true);      
+
+      setFlashMessages([
+        { category: "success", message: "Product created successfully." },
+      ]);
+      navigate("/products", { state: { timestamp: Date.now() } });
+    } catch (error) {
+      console.error("Error:", error);
+      setFlashMessages([
+        { category: "danger", message: "Failed to create product." },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div>
+    <>
+      {loading && (
+        <div className="alert alert-info" role="alert">
+          Creating product...
+        </div>
+      )}
       <GenericNewData
         title="New Product"
         formFields={formFields}
         handleNewData={handleNewData}
+        submitButtonLabel={loading ? "Submitting..." : "Create Product"}
+        disableSubmit={loading}
       />
-    </div>
+    </>
   );
 };
 

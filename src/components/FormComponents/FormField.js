@@ -10,6 +10,7 @@ const FormField = ({
   const handleSelectOnChange = (selectedOption) => {
     setFieldValue(selectedOption);
   };
+
   if (fieldType === "select") {
     console.log(`we have received ${selectOptions.length} select options`);
     return (
@@ -30,14 +31,23 @@ const FormField = ({
       <div className="form-group">
         <label>
           <input
-            type={fieldType}
+            type="checkbox"
             checked={fieldValue}
-            onChange={(e) => {
-              setFieldValue(e.target.checked);
-            }}
-          />
+            onChange={(e) => setFieldValue(e.target.checked)}
+          />{" "}
           {fieldLabel}
         </label>
+      </div>
+    );
+  } else if (fieldType === "file") {
+    return (
+      <div className="form-group">
+        <label>{fieldLabel}</label>
+        <input
+          type="file"
+          className="form-control"
+          onChange={(e) => setFieldValue(e.target.files[0])}
+        />
       </div>
     );
   } else {
@@ -48,9 +58,7 @@ const FormField = ({
           type={fieldType}
           className="form-control"
           value={fieldValue}
-          onChange={(e) => {
-            setFieldValue(e.target.value);
-          }}
+          onChange={(e) => setFieldValue(e.target.value)}
         />
       </div>
     );

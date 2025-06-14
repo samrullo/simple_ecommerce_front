@@ -7,16 +7,16 @@ import LoginWithAccessToken from "./user_management/LoginWithAccessToken";
 
 const MainPage = () => {
   return (
-    <BrowserRouter>
-      <div className="container mt-5">
-        <header>
-          <LoginWithAccessToken />
-          <NavBar title="Simple Ecommerce" />
-          <FlashMessage />
-        </header>
-        <AppRoutes />
-      </div>
-    </BrowserRouter>
+
+    <div className="container mt-5">
+      <header>
+        <LoginWithAccessToken />
+        <NavBar title="Simple Ecommerce" />
+        <FlashMessage />
+      </header>
+      <AppRoutes />
+    </div>
+
   );
 };
 

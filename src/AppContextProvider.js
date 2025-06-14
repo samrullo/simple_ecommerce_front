@@ -1,14 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import AppContext from "./AppContext";
+import { useNavigate } from "react-router-dom";
 
 const AppContextProvider = ({ children }) => {
-  const [dummyAppVariable, setDummyAppVariable] = useState(
-    "DummyAppVariableValue"
-  );
-  const [anotherDummyAppVariable, setAnotherDummyAppVariable] = useState(
-    "AnotherDummyAppVariableValue"
-  );
+  const navigate = useNavigate();
 
   // flash messages are a list of objects. each object has category and message keys. category can take values like success, danger, warning
   const [flashMessages, setFlashMessages] = useState([]);
@@ -20,11 +16,14 @@ const AppContextProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState({});
   const [emailNotVerified, setEmailNotVerified] = useState(false);
 
-  const contextValues = {
-    dummyAppVariable,
-    setDummyAppVariable,
-    anotherDummyAppVariable,
-    setAnotherDummyAppVariable,
+  const logoutUser = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    setUserInfo(null);
+    navigate("/login");
+  };
+
+  const contextValues = {    
     flashMessages,
     setFlashMessages,
     isAuthenticated,
@@ -33,6 +32,7 @@ const AppContextProvider = ({ children }) => {
     setEmailNotVerified,
     userInfo,
     setUserInfo,
+    logoutUser
   };
 
   return (

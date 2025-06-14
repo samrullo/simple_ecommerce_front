@@ -7,5 +7,8 @@ export const RESEND_EMAIL_VERIFICATION = `${API_HOSTNAME}/auth/resend-email-veri
 export const USER_INFO_ENDPOINT = `${API_HOSTNAME}/auth/user-info/`;
 export const PASSWORD_RESET_REQUEST_ENDPOINT = `${API_HOSTNAME}/auth/password/reset/`;
 export const PASSWORD_RESET_CONFIRM = `${API_HOSTNAME}/auth/password/reset/confirm/`;
+export const REFRESH_TOKEN_ENDPOINT = `${API_HOSTNAME}/auth/token/refresh/`
 
-export const PRODUCTS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/ecommerce/products/`;
+export const PRODUCTS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/products/`;
+export const CREATE_PRODUCT_ENDPOINT =`${API_HOSTNAME}/ecommerce/v1/create-product/`;
+export const UPDATE_PRODUCT_ENDPOINT =`${API_HOSTNAME}/ecommerce/v1/update-product/`;

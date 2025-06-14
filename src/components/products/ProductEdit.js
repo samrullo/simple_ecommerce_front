@@ -1,119 +1,171 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import GenericEditData from "../GenericDataComponents/GenericEditData";
+import AppContext from "../../AppContext";
+import { PRODUCTS_ENDPOINT,UPDATE_PRODUCT_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import { useApi } from "../hooks/useApi";
 
 const ProductEdit = () => {
-  const navigate = useNavigate();
   const { productId } = useParams();
-  const [newProductName, setNewProductName] = useState("");
-  const [newProductCategory, setNewProductCategory] = useState("");
-  const [newProductPrice, setNewProductPrice] = useState(0);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
-  const [nonTargetProducts, setNonTargetProducts] = useState([]);
-  const [targetProduct, setTargetProduct] = useState(null);
+  const navigate = useNavigate();
+  const { userInfo, setFlashMessages } = useContext(AppContext);
+  const { get, put, del } = useApi();
 
-  useEffect(() => {
-    const fetchAndSetTargetNonTargetProduct = async () => {
-      console.log(
-        `will set non target and target products based on productId ${productId}`
-      );
-      // extract the product with the productId
-      const products = JSON.parse(localStorage.getItem("products"));
-      const non_target_products = products.filter(
-        (item) => item.id !== parseInt(productId)
-      );
-      console.log(
-        `there are ${non_target_products.length} non target products`
-      );
-      await setNonTargetProducts(non_target_products);
-      const target_products = products.filter(
-        (item) => item.id === parseInt(productId)
-      );
-      console.log(`we found ${target_products.length} target products`);
-      const product = target_products.length > 0 ? target_products[0] : null;
-      await setTargetProduct(product);
-      console.log(`product is ${product}, target product is ${targetProduct}`);
-    };
-    fetchAndSetTargetNonTargetProduct();
-  }, [productId]);
+  const [name, setName] = useState("");
+  const [sku, setSku] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState(1);
+  const [categoryName, setCategoryName] = useState("");
+  const [brandName, setBrandName] = useState("");
+  const [tagsText, setTagsText] = useState("");
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (targetProduct) {
-      console.log(
-        `targetProduct is not null so will set new produt name ${targetProduct.name}`
-      );
-      setNewProductName(targetProduct.name);
-      setNewProductCategory({
-        value: targetProduct.category,
-        label: targetProduct.category,
-      });
-      setNewProductPrice(targetProduct.price);
-    } else {
-      console.log("targetProduct is null");
+    if (!hasLoaded) {
+      const loadProduct = async () => {
+        try {
+          const data = await get(`${PRODUCTS_ENDPOINT}${productId}/`);
+          setName(data.name);
+          setSku(data.sku);
+          setDescription(data.description || "");
+          const activePrice = data.price?.find(p => p.end_date === null);
+          setPrice(activePrice?.price || "");
+          setStock(data.stock || 1);
+          setCategoryName(data.category?.name || "");
+          setBrandName(data.brand?.name || "");
+          setTagsText(data.tags?.map(t => t.name).join(", ") || "");
+          setHasLoaded(true);
+        } catch (err) {
+          console.error("Failed to fetch product:", err);
+          setFlashMessages([{ category: "danger", message: "Failed to load product." }]);
+        }
+      };
+
+      loadProduct();
     }
-  }, [targetProduct]);
+  }, [hasLoaded, get, productId, setFlashMessages]);
 
-  const categories = ["Electronics", "Food", "Clothes"];
-  const categorySelectOptions = categories.map((category) => {
-    return { value: category, label: category };
-  });
+  if (!userInfo?.is_staff && !userInfo?.is_superuser) {
+    return <p>You are not authorized to edit products.</p>;
+  }
 
   const formFields = [
     {
       fieldType: "text",
       fieldLabel: "Name",
-      fieldValue: newProductName,
-      setFieldValue: setNewProductName,
+      fieldValue: name,
+      setFieldValue: setName,
     },
     {
-      fieldType: "select",
-      fieldLabel: "Category",
-      fieldValue: newProductCategory,
-      setFieldValue: setNewProductCategory,
-      selectOptions: categorySelectOptions,
+      fieldType: "text",
+      fieldLabel: "SKU",
+      fieldValue: sku,
+      setFieldValue: setSku,
+    },
+    {
+      fieldType: "textarea",
+      fieldLabel: "Description",
+      fieldValue: description,
+      setFieldValue: setDescription,
     },
     {
       fieldType: "number",
       fieldLabel: "Price",
-      fieldValue: newProductPrice,
-      setFieldValue: setNewProductPrice,
+      fieldValue: price,
+      setFieldValue: setPrice,
+    },
+    {
+      fieldType: "number",
+      fieldLabel: "Inventory (Stock)",
+      fieldValue: stock,
+      setFieldValue: setStock,
+    },
+    {
+      fieldType: "text",
+      fieldLabel: "Category",
+      fieldValue: categoryName,
+      setFieldValue: setCategoryName,
+    },
+    {
+      fieldType: "text",
+      fieldLabel: "Brand",
+      fieldValue: brandName,
+      setFieldValue: setBrandName,
+    },
+    {
+      fieldType: "text",
+      fieldLabel: "Tags (comma-separated)",
+      fieldValue: tagsText,
+      setFieldValue: setTagsText,
+    },
+    {
+      fieldType: "file",
+      fieldLabel: "Image (optional)",
+      setFieldValue: setImage,
     },
   ];
 
-  const handleEdit = (e) => {
+  const handleEdit = async (e) => {
     e.preventDefault();
-    nonTargetProducts.push({
-      id: parseInt(productId),
-      name: newProductName,
-      category: newProductCategory.value,
-      price: newProductPrice,
-    });
-    localStorage.setItem("products", JSON.stringify(nonTargetProducts));
-    console.log(
-      `finished editing product id ${productId} name ${newProductName}`
-    );
-    navigate("/products", {
-      replace: true,
-      state: { timestamp: new Date().getTime() },
-    });
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("sku", sku);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("stock", stock);
+    formData.append("category_name", categoryName);
+    formData.append("brand_name", brandName);
+    formData.append("tags", tagsText);
+    if (image) formData.append("image", image); // optional
+
+    try {
+      await put(`${UPDATE_PRODUCT_ENDPOINT}${productId}/`, formData, true);
+      setFlashMessages([{ category: "success", message: "Product updated successfully." }]);
+      navigate("/products", { state: { timestamp: Date.now() } });
+    } catch (error) {
+      const backendMessage =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        JSON.stringify(error.response?.data) ||
+        "Update failed.";
+
+      setFlashMessages([{ category: "danger", message: `Update failed: ${backendMessage}` }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = () => {
-    localStorage.setItem("products", JSON.stringify(nonTargetProducts));
-    console.log(
-      `finished deleting product id ${productId} name ${newProductName}`
-    );
-    navigate("/products", {
-      replace: true,
-      state: { timestamp: new Date().getTime() },
-    });
+  const handleDelete = async () => {
+    try {
+      await del(`${PRODUCTS_ENDPOINT}${productId}/`, true);
+      setFlashMessages([{ category: "success", message: "Product deleted." }]);
+      navigate("/products", { state: { timestamp: Date.now() } });
+    } catch (error) {
+      const backendMessage =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        JSON.stringify(error.response?.data) ||
+        "Deletion failed.";
+
+      setFlashMessages([{ category: "danger", message: `Deletion failed: ${backendMessage}` }]);
+    }
   };
 
   return (
     <>
+      {loading && (
+        <div className="alert alert-info" role="alert">
+          Updating product...
+        </div>
+      )}
       <GenericEditData
-        title={`Edit product id ${productId}`}
+        title={`Edit Product #${productId}`}
         formFields={formFields}
         handleEdit={handleEdit}
         handleDelete={handleDelete}

@@ -6,15 +6,10 @@ import Logout from "./user_management/Logout";
 
 const NavBar = ({ title }) => {
   const {
-    dummyAppVariable,
-
-    anotherDummyAppVariable,
-
     isAuthenticated,
   } = useContext(AppContext);
 
-  console.log(`dummyAppVariable value is ${dummyAppVariable}`);
-  console.log(`anotherDummyAppVariable value is ${anotherDummyAppVariable}`);
+
 
   return (
     <nav className="navbar navbar-expand-lg bg-light navbar-light">

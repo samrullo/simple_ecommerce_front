@@ -67,6 +67,8 @@ const DataTable = ({ data, hiddenColumns, onRowClick, width_pct }) => {
           rowData={rowData}
           onFilterChanged={handleFilterChange}
           onRowClicked={onRowClick}
+          enableCellTextSelection={true}
+          enableClipboard={true}          
         ></AgGridReact>
       </div>
     </div>

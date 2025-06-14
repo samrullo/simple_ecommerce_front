@@ -1,122 +1,79 @@
 import axios from "axios";
+import { refreshAccessToken } from "./token_utils";
 
-export const createResourceWithoutAuth = async (
-  apiEndpoint,
-  payload,
-  resource_name
-) => {
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("access_token");
+  if (!token) throw new Error("No access token found");
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
+
+const makeRequestWithRetry = async (method, apiEndpoint, payload, resourceName, needsAuth = true) => {
   try {
-    const response = await axios.post(apiEndpoint, payload, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const headers = {
+      "Content-Type": "application/json",
+      ...(needsAuth ? getAuthHeaders() : {}),
+    };
+
+    const response = await axios({
+      method,
+      url: apiEndpoint,
+      data: payload,
+      headers,
     });
-    const posted_data = await response.data;
-    console.log(
-      `successfully created new resource ${resource_name} ${JSON.stringify(
-        posted_data
-      )}`
-    );
-    return posted_data;
+
+    console.log(`Successfully ${method}ed ${resourceName}:`, response.data);
+    return response.data;
+
   } catch (error) {
-    console.log(
-      `error while creating new resource ${resource_name} with payload ${JSON.stringify(
-        payload
-      )}, error message : ${error}`
-    );
+    if (needsAuth && error.response?.status === 401) {
+      const newAccessToken = await refreshAccessToken();
+      if (newAccessToken) {
+        try {
+          const retryHeaders = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${newAccessToken}`,
+          };
+
+          const retryResponse = await axios({
+            method,
+            url: apiEndpoint,
+            data: payload,
+            headers: retryHeaders,
+          });
+
+          console.log(`Retried and ${method}ed ${resourceName}:`, retryResponse.data);
+          return retryResponse.data;
+
+        } catch (retryError) {
+          console.error(`Retry failed for ${resourceName}:`, retryError.response?.data || retryError.message);
+          throw retryError;
+        }
+      }
+    }
+
+    console.error(`Error ${method}ing ${resourceName}:`, error.response?.data || error.message);
+    throw error;
   }
 };
 
-export const createResource = async (apiEndpoint, payload, resource_name) => {
-  try {
-    const response = await axios.post(apiEndpoint, payload, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      },
-    });
-    const posted_data = await response.data;
-    console.log(
-      `successfully created new resource ${resource_name} ${JSON.stringify(
-        posted_data
-      )}`
-    );
-    return posted_data;
-  } catch (error) {
-    console.log(
-      `error while creating new resource ${resource_name} with payload ${JSON.stringify(
-        payload
-      )}, error message : ${error}`
-    );
-  }
+export const createResource = (apiEndpoint, payload, resourceName, needsAuth = true) => {
+  return makeRequestWithRetry("post", apiEndpoint, payload, resourceName, needsAuth);
 };
 
-export const updateResource = async (apiEndpoint, payload, resource_name) => {
-  try {
-    const response = await axios.put(apiEndpoint, payload, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      },
-    });
-    const updated_data = await response.data;
-    console.log(
-      `successfully updated resource ${resource_name} ${JSON.stringify(
-        updated_data
-      )}`
-    );
-    return updated_data;
-  } catch (error) {
-    console.log(
-      `error while updating resource ${resource_name} with payload ${JSON.stringify(
-        payload
-      )}, error message : ${error}`
-    );
-  }
+export const createResourceWithoutAuth = (apiEndpoint, payload, resourceName) => {
+  return createResource(apiEndpoint, payload, resourceName, false);
 };
 
-export const updatePatchResource = async (
-  apiEndpoint,
-  payload,
-  resource_name
-) => {
-  try {
-    const response = await axios.patch(apiEndpoint, payload, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      },
-    });
-    const updated_data = await response.data;
-    console.log(
-      `successfully updated resource with PATCH ${resource_name} ${JSON.stringify(
-        updated_data
-      )}`
-    );
-    return updated_data;
-  } catch (error) {
-    console.log(
-      `error while updating resource with PATCH ${resource_name} with payload ${JSON.stringify(
-        payload
-      )}, error message : ${error}`
-    );
-  }
+export const updateResource = (apiEndpoint, payload, resourceName, needsAuth = true) => {
+  return makeRequestWithRetry("put", apiEndpoint, payload, resourceName, needsAuth);
 };
 
-export const deleteResource = async (apiEndpoint, resource_name) => {
-  try {
-    const response = await axios.delete(apiEndpoint, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      },
-    });
-    const deleted_data = await response.data;
-    console.log(
-      `successfully deleted resource ${resource_name} ${JSON.stringify(
-        deleted_data
-      )}`
-    );
-    return deleted_data;
-  } catch (error) {
-    console.log(
-      `error while deleting resource ${resource_name}, error message : ${error}`
-    );
-  }
+export const updatePatchResource = (apiEndpoint, payload, resourceName, needsAuth = true) => {
+  return makeRequestWithRetry("patch", apiEndpoint, payload, resourceName, needsAuth);
+};
+
+export const deleteResource = (apiEndpoint, resourceName, needsAuth = true) => {
+  return makeRequestWithRetry("delete", apiEndpoint, null, resourceName, needsAuth);
 };
