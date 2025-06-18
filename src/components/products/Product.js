@@ -2,9 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
 import AppContext from "../../AppContext";
-import { fetchResource } from "../ApiUtils/fetch_data";
-import { PRODUCTS_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 import { useApi } from "../hooks/useApi";
+import { PRODUCTS_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 
 const Product = () => {
   const { get } = useApi();
@@ -25,17 +24,16 @@ const Product = () => {
         setProducts(
           data.map((product) => {
             const activePrice = product.price?.find((p) => p.end_date === null);
-            const activeInventory = product.inventory?.[0]; // first inventory entry for now
+            const activeInventory = product.inventory?.[0];
 
             return {
-
               ...product,
               category: product.category?.name || "",
               brand: product.brand?.name || "",
               tags: product.tags?.map((tag) => tag.name).join(", ") || "",
               price: activePrice?.price || "",
-              inventory: activeInventory?.stock || ""
-            }
+              inventory: activeInventory?.stock || "",
+            };
           })
         );
       } catch (error) {
@@ -58,6 +56,25 @@ const Product = () => {
       setSelectedRowData(event.data);
     }
   };
+
+  const baseColumns = [
+    { field: "name", headerName: "Product Name" },
+    { field: "sku", headerName: "SKU" },
+    { field: "category", headerName: "Category" },
+    { field: "brand", headerName: "Brand" },
+    { field: "tags", headerName: "Tags" },
+    { field: "price", headerName: "Price" },
+    { field: "inventory", headerName: "Stock" },
+
+  ];
+
+  const columns = isStaff
+    ? [...baseColumns,
+    { field: "created_at", headerName: "Created At" },
+    { field: "updated_at", headerName: "Updated At" },
+    { field: "is_active", headerName: "Active" }
+    ]
+    : baseColumns;
 
   return (
     <div className="container mt-4">
@@ -92,6 +109,7 @@ const Product = () => {
       ) : (
         <DataTable
           data={products}
+          columns={columns}
           hiddenColumns={["id"]}
           width_pct={100}
           onRowClick={handleRowClick}
