@@ -7,13 +7,16 @@ import ProductEdit from "./products/ProductEdit";
 import Contact from "./contacts/Contact";
 import ContactNew from "./contacts/ContactNew";
 import ContactEdit from "./contacts/ContactEdit";
+import Purchase from "./purchases/Purchase";
+import PurchaseNew from "./purchases/PurchaseNew";
+import PurchaseEdit from "./purchases/PurchaseEdit";
 import AboutUs from "./AboutUs";
 import Login from "./user_management/Login";
 import Register from "./user_management/Register";
 import EmailNotVerified from "./user_management/EmailNotVerified";
 import Profile from "./user_management/Profile";
 import ForgotPassword from "./user_management/ForgotPassword";
-import ResetPasswordConfirm from "./user_management/ResetPasswordConfirm"; // ✅ NEW IMPORT
+import ResetPasswordConfirm from "./user_management/ResetPasswordConfirm";
 
 const AppRoutes = () => {
   return (
@@ -27,6 +30,10 @@ const AppRoutes = () => {
         <Route path="/contacts" element={<Contact />}>
           <Route path="new" element={<ContactNew />} />
           <Route path="edit/:contactId" element={<ContactEdit />} />
+        </Route>
+        <Route path="/purchases" element={<Purchase />}>
+          <Route path="new" element={<PurchaseNew />} />
+          <Route path="edit/:purchaseId" element={<PurchaseEdit />} />
         </Route>
       </Route>
       <Route path="/about" element={<AboutUs />} />
