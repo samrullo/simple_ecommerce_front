@@ -58,6 +58,7 @@ const Product = () => {
   };
 
   const baseColumns = [
+    { field: "image", headerName: "Image" },
     { field: "name", headerName: "Product Name" },
     { field: "sku", headerName: "SKU" },
     { field: "category", headerName: "Category" },

@@ -32,16 +32,17 @@ const DataTable = ({ data, columns, hiddenColumns, onRowClick, width_pct }) => {
     suppressAndOrCondition: true,
   };
 
-  const generateAllColumnDefs = () =>
-    Object.keys(data[0] || {}).map((key) => ({
-      field: key,
-      headerName: key,
-      valueFormatter: (params) =>
-        params.value ? params.value.toLocaleString() : null,
-      sortable: true,
-      filter: true,
-      filterParams: defaultFilterParams,
-    }));
+  // ⬇️ Custom renderer for image fields
+  const imageCellRenderer = (params) => {
+    if (!params.value) return null;
+    return (
+      <img
+        src={params.value}
+        alt="Thumbnail"
+        style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "4px" }}
+      />
+    );
+  };
 
   const baseColumnDefs = columns
     ? columns.map((col) => ({
@@ -49,12 +50,33 @@ const DataTable = ({ data, columns, hiddenColumns, onRowClick, width_pct }) => {
         sortable: true,
         filter: true,
         filterParams: defaultFilterParams,
+        ...(col.field === "image" && {
+          cellRenderer: imageCellRenderer,
+          filter: false,
+          valueFormatter: undefined,
+        }),
         valueFormatter:
           col.valueFormatter ||
-          ((params) =>
-            params.value ? params.value.toLocaleString() : null),
+          (col.field !== "image"
+            ? (params) => (params.value ? params.value.toLocaleString() : null)
+            : undefined),
       }))
-    : generateAllColumnDefs();
+    : Object.keys(data[0] || {}).map((key) => ({
+        field: key,
+        headerName: key,
+        sortable: true,
+        filter: true,
+        filterParams: defaultFilterParams,
+        ...(key === "image" && {
+          cellRenderer: imageCellRenderer,
+          filter: false,
+          valueFormatter: undefined,
+        }),
+        valueFormatter:
+          key !== "image"
+            ? (params) => (params.value ? params.value.toLocaleString() : null)
+            : undefined,
+      }));
 
   const columnDefs = (hiddenColumns || []).length
     ? baseColumnDefs.map((col) =>
