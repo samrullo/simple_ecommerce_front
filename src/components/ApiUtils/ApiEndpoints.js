@@ -12,6 +12,7 @@ export const REFRESH_TOKEN_ENDPOINT = `${API_HOSTNAME}/auth/token/refresh/`
 export const PRODUCTS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/products/`;
 export const CREATE_PRODUCT_ENDPOINT =`${API_HOSTNAME}/ecommerce/v1/create-product/`;
 export const UPDATE_PRODUCT_ENDPOINT =`${API_HOSTNAME}/ecommerce/v1/update-product/`;
+export const CREATE_UPDATE_PRODUCTS_FROM_CSV_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/create-update-products-from-csv/`;
 
 export const PURCHASES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/purchases/`;
 export const PURCHASE_CREATE_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/create-purchase/`;

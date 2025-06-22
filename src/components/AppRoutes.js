@@ -17,6 +17,7 @@ import EmailNotVerified from "./user_management/EmailNotVerified";
 import Profile from "./user_management/Profile";
 import ForgotPassword from "./user_management/ForgotPassword";
 import ResetPasswordConfirm from "./user_management/ResetPasswordConfirm";
+import ProductCreateUpdateFromCSV from "./products/ProductCreateUpdateFromCSV";
 
 const AppRoutes = () => {
   return (
@@ -27,15 +28,17 @@ const AppRoutes = () => {
           <Route path="new" element={<ProductNew />} />
           <Route path="edit/:productId" element={<ProductEdit />} />
         </Route>
-        <Route path="/contacts" element={<Contact />}>
-          <Route path="new" element={<ContactNew />} />
-          <Route path="edit/:contactId" element={<ContactEdit />} />
-        </Route>
+        
         <Route path="/purchases" element={<Purchase />}>
           <Route path="new" element={<PurchaseNew />} />
           <Route path="edit/:purchaseId" element={<PurchaseEdit />} />
         </Route>
+        <Route path="/contacts" element={<Contact />}>
+          <Route path="new" element={<ContactNew />} />
+          <Route path="edit/:contactId" element={<ContactEdit />} />
+        </Route>
       </Route>
+      <Route path="/product-create-update-from-csv" element={<ProductCreateUpdateFromCSV/>}/>
       <Route path="/about" element={<AboutUs />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
