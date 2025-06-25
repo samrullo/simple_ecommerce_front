@@ -6,8 +6,14 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-community/styles/ag-theme-balham.css";
 import "ag-grid-community/styles/ag-theme-material.css";
 
-const DataTable = ({ data, columns, hiddenColumns, onRowClick, width_pct }) => {
-  if (!width_pct) width_pct = 50;
+const DataTable = ({
+  data,
+  columns,
+  hiddenColumns,
+  onRowClick,
+  width_pct = 50,
+  decimalPlaces = 0,
+}) => {
   const [rowData, setRowData] = useState(data);
 
   useEffect(() => {
@@ -32,20 +38,45 @@ const DataTable = ({ data, columns, hiddenColumns, onRowClick, width_pct }) => {
     suppressAndOrCondition: true,
   };
 
-  // ⬇️ Custom renderer for image fields
+  const isNumeric = (value) =>
+    typeof value === "number" || (!isNaN(value) && value !== "");
+
   const imageCellRenderer = (params) => {
     if (!params.value) return null;
     return (
       <img
         src={params.value}
         alt="Thumbnail"
-        style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "4px" }}
+        style={{
+          width: "40px",
+          height: "40px",
+          objectFit: "cover",
+          borderRadius: "4px",
+        }}
       />
     );
   };
 
+  const getDefaultValueFormatter = (fieldName) => {
+    const sampleValue = data?.find((row) => row[fieldName] != null)?.[fieldName];
+    if (isNumeric(sampleValue)) {
+      return (params) =>
+        params.value != null
+          ? Number(params.value).toLocaleString(undefined, {
+              minimumFractionDigits: decimalPlaces,
+              maximumFractionDigits: decimalPlaces,
+            })
+          : "";
+    }
+    return undefined;
+  };
+
   const baseColumnDefs = columns
-    ? columns.map((col) => ({
+  ? columns.map((col) => {
+      const sampleValue = data?.find((row) => row[col.field] != null)?.[col.field];
+      const isNumericField = isNumeric(sampleValue);
+
+      return {
         ...col,
         sortable: true,
         filter: true,
@@ -56,12 +87,16 @@ const DataTable = ({ data, columns, hiddenColumns, onRowClick, width_pct }) => {
           valueFormatter: undefined,
         }),
         valueFormatter:
-          col.valueFormatter ||
-          (col.field !== "image"
-            ? (params) => (params.value ? params.value.toLocaleString() : null)
-            : undefined),
-      }))
-    : Object.keys(data[0] || {}).map((key) => ({
+          col.valueFormatter ??
+          (col.field !== "image" ? getDefaultValueFormatter(col.field) : undefined),
+        cellStyle: isNumericField ? { textAlign: "right" } : undefined,
+      };
+    })
+  : Object.keys(data[0] || {}).map((key) => {
+      const sampleValue = data?.find((row) => row[key] != null)?.[key];
+      const isNumericField = isNumeric(sampleValue);
+
+      return {
         field: key,
         headerName: key,
         sortable: true,
@@ -73,12 +108,12 @@ const DataTable = ({ data, columns, hiddenColumns, onRowClick, width_pct }) => {
           valueFormatter: undefined,
         }),
         valueFormatter:
-          key !== "image"
-            ? (params) => (params.value ? params.value.toLocaleString() : null)
-            : undefined,
-      }));
+          key !== "image" ? getDefaultValueFormatter(key) : undefined,
+        cellStyle: isNumericField ? { textAlign: "right" } : undefined,
+      };
+    });
 
-  const columnDefs = (hiddenColumns || []).length
+  const columnDefs = hiddenColumns?.length
     ? baseColumnDefs.map((col) =>
         hiddenColumns.includes(col.field)
           ? { ...col, hide: true }

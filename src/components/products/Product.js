@@ -97,10 +97,10 @@ const Product = () => {
         )}
       </div>
 
-      {isStaff && (
-        <Link className="btn btn-primary my-3" to="/products/new">
-          New Product
-        </Link>
+      {isStaff && (<div>
+        <Link className="btn btn-primary" to="/products/new">New Product</Link>
+        <Link className="btn btn-primary" style={{marginLeft:"1em"}} to="/product-create-update-from-csv">Products From CSV file</Link>
+      </div>
       )}
 
       <Outlet />

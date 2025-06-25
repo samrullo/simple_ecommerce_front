@@ -5,8 +5,9 @@ import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
 import {
   PURCHASES_ENDPOINT,
-  UPDATE_PURCHASE_ENDPOINT,
+  UPDATE_PURCHASE_ENDPOINT,PRODUCTS_ENDPOINT
 } from "../ApiUtils/ApiEndpoints";
+
 
 const PurchaseEdit = () => {
   const { purchaseId } = useParams();
@@ -14,6 +15,8 @@ const PurchaseEdit = () => {
   const { userInfo, setFlashMessages } = useContext(AppContext);
   const { get, put, del } = useApi();
 
+  const [products,setProducts]=useState([])
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [productId, setProductId] = useState("");
   const [quantity, setQuantity] = useState(0);
@@ -22,10 +25,28 @@ const PurchaseEdit = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+      const fetchProducts = async () => {
+        try {
+          const data = await get(PRODUCTS_ENDPOINT, false);
+          const options = data.map((product) => ({
+            value: product.id,
+            label: product.name,
+          }));
+          setProducts(options);
+        } catch (error) {
+          console.error("Failed to fetch products", error);
+          setProducts([]);
+        }
+      };
+      fetchProducts();
+    }, []);
+
+  useEffect(() => {
     const loadPurchase = async () => {
       try {
         const data = await get(`${PURCHASES_ENDPOINT}${purchaseId}/`);
         setProductId(data.product);
+        setSelectedProduct({value:data.product,label:data.product_name})
         setQuantity(data.quantity);
         setPricePerUnit(data.price_per_unit);
         setPurchaseDatetime(data.purchase_datetime);
@@ -46,11 +67,12 @@ const PurchaseEdit = () => {
 
   const formFields = [
     {
-      fieldType: "number",
-      fieldLabel: "Product ID",
-      fieldValue: productId,
-      setFieldValue: setProductId,
-    },
+      fieldType: "select",
+      fieldLabel: "Product",
+      fieldValue: selectedProduct,
+      setFieldValue: setSelectedProduct,
+      selectOptions: products,
+    },,
     {
       fieldType: "number",
       fieldLabel: "Quantity",
@@ -83,7 +105,7 @@ const PurchaseEdit = () => {
     };
 
     try {
-      await put(`${UPDATE_PURCHASE_ENDPOINT}${purchaseId}/`, payload);
+      await put(`${UPDATE_PURCHASE_ENDPOINT}${purchaseId}/`, payload,true);
       setFlashMessages([
         { category: "success", message: "Purchase updated successfully." },
       ]);

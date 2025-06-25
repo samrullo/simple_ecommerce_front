@@ -19,7 +19,7 @@ const AppContextProvider = ({ children }) => {
   const logoutUser = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
-    localStorage.setIsAuthenticated(false);
+    setIsAuthenticated(false);
     setUserInfo(null);
     navigate("/login");
   };

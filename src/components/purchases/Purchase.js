@@ -1,6 +1,6 @@
 // src/components/Purchase/Purchase.js
 import React, { useEffect, useState, useContext } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
@@ -9,6 +9,8 @@ import { PURCHASES_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 const Purchase = () => {
   const { get } = useApi();
   const navigate = useNavigate();
+  const { state = {} } = useLocation();
+  const { timestamp } = state ?? {};
   const [purchases, setPurchases] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -21,7 +23,7 @@ const Purchase = () => {
         const data = await get(PURCHASES_ENDPOINT, true);
         setPurchases(
           data.map((purchase) => ({
-            ...purchase,            
+            ...purchase,
           }))
         );
       } catch (error) {
@@ -29,7 +31,7 @@ const Purchase = () => {
       }
     };
     if (isStaff) fetchPurchases();
-  }, [isStaff]);
+  }, [isStaff, timestamp]);
 
   useEffect(() => {
     if (editMode && selectedRowData && isStaff) {

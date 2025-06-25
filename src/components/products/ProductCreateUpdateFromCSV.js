@@ -15,25 +15,33 @@ const ProductCreateUpdateFromCSV = () => {
 
     const handleUpload = async () => {
         try {
-            const form = new FormData()
-            form.append("file", file)
-            setUploading(true)
-            const response = await post(`${CREATE_UPDATE_PRODUCTS_FROM_CSV_ENDPOINT}`, form, true)
-            setFlashMessages([{ category: "success", message: `Successfully uploaded products ${response.data.message}` }])
-            navigate("/products", { state: { timestamp: Date.now() } })
+            const form = new FormData();
+            form.append("file", file);
+            setUploading(true);
+            const response = await post(`${CREATE_UPDATE_PRODUCTS_FROM_CSV_ENDPOINT}`, form, true);
+    
+            const message = response?.data?.message || "Products uploaded successfully.";
+            setFlashMessages([{ category: "success", message }]);
+            navigate("/products", { state: { timestamp: Date.now() } });
         } catch (err) {
-            console.log(`Error while uploading products ${err}`)
+            console.log("Error while uploading products", err);
+    
+            const errorMsg = err?.response?.data?.message || err?.message || "Unknown error occurred.";
+            setFlashMessages([{ category: "danger", message: `Upload failed: ${errorMsg}` }]);
         } finally {
-            setUploading(false)
+            setUploading(false);
         }
-
-    }
+    };
 
     return <>
         <div className="form-group">
-            <label className="form-label">Products csv file. Required columns <code>product_name,category_name,price,stock</code></label>
+            <label className="form-label mt-3">
+                <p>Products csv file. </p>
+                <p>Required columns : <code>product_name,category_name,price,stock</code></p>
+                <p>Optional columns : <code>description,brand_name,tag_names,sku</code></p>
+            </label>
             <input type="file" className="form-control" accept=".csv" onChange={(e) => setFile(e.target.files[0])} />
-            <button className="btn btn-primary" onClick={handleUpload} disabled={uploading}>{uploading ? "Uploading..." : "Upload"}</button>
+            <button className="btn btn-primary mt-3" onClick={handleUpload} disabled={uploading}>{uploading ? "Uploading..." : "Upload"}</button>
         </div>
     </>
 
