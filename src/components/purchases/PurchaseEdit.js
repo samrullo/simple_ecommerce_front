@@ -44,7 +44,7 @@ const PurchaseEdit = () => {
   useEffect(() => {
     const loadPurchase = async () => {
       try {
-        const data = await get(`${PURCHASES_ENDPOINT}${purchaseId}/`);
+        const data = await get(`${PURCHASES_ENDPOINT}${purchaseId}/`,true);
         setProductId(data.product);
         setSelectedProduct({value:data.product,label:data.product_name})
         setQuantity(data.quantity);
