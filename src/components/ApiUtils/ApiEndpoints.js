@@ -4,6 +4,7 @@ export const LOGIN_ENDPOINT = `${API_HOSTNAME}/auth/login/`;
 export const LOGOUT_ENDPOINT = `${API_HOSTNAME}/auth/logout/`;
 export const REGISTER_ENDPOINT = `${API_HOSTNAME}/auth/register/`;
 export const RESEND_EMAIL_VERIFICATION = `${API_HOSTNAME}/auth/resend-email-verification/`;
+export const VERIFY_EMAIL_ENDPOINT=`${API_HOSTNAME}/auth/registration/account-confirm-email/`
 export const USER_INFO_ENDPOINT = `${API_HOSTNAME}/auth/user-info/`;
 export const PASSWORD_RESET_REQUEST_ENDPOINT = `${API_HOSTNAME}/auth/password/reset/`;
 export const PASSWORD_RESET_CONFIRM = `${API_HOSTNAME}/auth/password/reset/confirm/`;

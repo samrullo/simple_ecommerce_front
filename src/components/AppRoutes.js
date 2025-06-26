@@ -14,6 +14,7 @@ import AboutUs from "./AboutUs";
 import Login from "./user_management/Login";
 import Register from "./user_management/Register";
 import EmailNotVerified from "./user_management/EmailNotVerified";
+import EmailVerification from "./user_management/EmailVerification";
 import Profile from "./user_management/Profile";
 import ForgotPassword from "./user_management/ForgotPassword";
 import ResetPasswordConfirm from "./user_management/ResetPasswordConfirm";
@@ -49,6 +50,7 @@ const AppRoutes = () => {
         path="/reset-password-confirm/:uid/:token"
         element={<ResetPasswordConfirm />}
       />
+      <Route path="/verify-email/:key" element={<EmailVerification/>}/>
     </Routes>
   );
 };
