@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import GenericEditData from "../GenericDataComponents/GenericEditData";
 import AppContext from "../../AppContext";
-import { PRODUCTS_ENDPOINT,UPDATE_PRODUCT_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import { PRODUCTS_ENDPOINT, UPDATE_PRODUCT_ENDPOINT,CURRENCIES_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 import { useApi } from "../hooks/useApi";
 
 const ProductEdit = () => {
@@ -17,12 +17,28 @@ const ProductEdit = () => {
   const [sku, setSku] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [currencies, setCurrencies] = useState([]);
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
   const [stock, setStock] = useState(1);
   const [categoryName, setCategoryName] = useState("");
   const [brandName, setBrandName] = useState("");
   const [tagsText, setTagsText] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCurrencies = async () => {
+      try {
+        const fetched_currencies = await get(CURRENCIES_ENDPOINT);
+        const currency_options = fetched_currencies.map((fetched_currency) => ({ value: fetched_currency.code, label: fetched_currency.name }))
+        setCurrencies(currency_options)
+      } catch (err) {
+        console.log(`Error when fetching currencies : ${err}`)
+        setCurrencies([])
+      }
+    }
+    fetchCurrencies()
+  }, [])
 
   useEffect(() => {
     if (!hasLoaded) {
@@ -32,9 +48,12 @@ const ProductEdit = () => {
           setName(data.name);
           setSku(data.sku);
           setDescription(data.description || "");
-          const activePrice = data.price?.find(p => p.end_date === null);
+          const activePrice = data.price?.find(p => p.end_date === null);          
           setPrice(activePrice?.price || "");
-          const activeInventory = data.inventory?.reduce((total, inv) => total + inv.stock, 0) || 0;         
+          const currency_code = activePrice?.currency?.code || "";
+          const currency_name = activePrice?.currency?.name || "";
+          setSelectedCurrency({value:currency_code,label:currency_name})
+          const activeInventory = data.inventory?.reduce((total, inv) => total + inv.stock, 0) || 0;
           setStock(activeInventory || 1);
           setCategoryName(data.category?.name || "");
           setBrandName(data.brand?.name || "");
@@ -80,6 +99,13 @@ const ProductEdit = () => {
       setFieldValue: setPrice,
     },
     {
+      fieldType: "select",
+      fieldLabel: "Currency",
+      fieldValue: selectedCurrency,
+      setFieldValue: setSelectedCurrency,
+      selectOptions: currencies
+    },
+    {
       fieldType: "number",
       fieldLabel: "Inventory (Stock)",
       fieldValue: stock,
@@ -119,6 +145,7 @@ const ProductEdit = () => {
     formData.append("sku", sku);
     formData.append("description", description);
     formData.append("price", price);
+    formData.append("currency",selectedCurrency.value);
     formData.append("stock", stock);
     formData.append("category_name", categoryName);
     formData.append("brand_name", brandName);

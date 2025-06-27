@@ -10,6 +10,8 @@ export const PASSWORD_RESET_REQUEST_ENDPOINT = `${API_HOSTNAME}/auth/password/re
 export const PASSWORD_RESET_CONFIRM = `${API_HOSTNAME}/auth/password/reset/confirm/`;
 export const REFRESH_TOKEN_ENDPOINT = `${API_HOSTNAME}/auth/token/refresh/`
 
+export const CURRENCIES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/currencies/`;
+export const FXRATES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/fxrates/`;
 export const PRODUCTS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/products/`;
 export const CREATE_PRODUCT_ENDPOINT =`${API_HOSTNAME}/ecommerce/v1/create-product/`;
 export const UPDATE_PRODUCT_ENDPOINT =`${API_HOSTNAME}/ecommerce/v1/update-product/`;
