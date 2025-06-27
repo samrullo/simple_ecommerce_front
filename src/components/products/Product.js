@@ -24,7 +24,7 @@ const Product = () => {
         setProducts(
           data.map((product) => {
             const activePrice = product.price?.find((p) => p.end_date === null);
-            const activeInventory = product.inventory?.[0];
+            const activeInventory = product.inventory?.reduce((total, inv) => total + inv.stock, 0) || 0;
 
             return {
               ...product,
@@ -32,7 +32,7 @@ const Product = () => {
               brand: product.brand?.name || "",
               tags: product.tags?.map((tag) => tag.name).join(", ") || "",
               price: activePrice?.price || "",
-              inventory: activeInventory?.stock || "",
+              inventory: activeInventory || "",
             };
           })
         );

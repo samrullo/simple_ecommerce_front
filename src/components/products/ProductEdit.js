@@ -34,8 +34,8 @@ const ProductEdit = () => {
           setDescription(data.description || "");
           const activePrice = data.price?.find(p => p.end_date === null);
           setPrice(activePrice?.price || "");
-          const activeInventory = data.inventory?.[0];          
-          setStock(activeInventory?.stock || 1);
+          const activeInventory = data.inventory?.reduce((total, inv) => total + inv.stock, 0) || 0;         
+          setStock(activeInventory || 1);
           setCategoryName(data.category?.name || "");
           setBrandName(data.brand?.name || "");
           setTagsText(data.tags?.map(t => t.name).join(", ") || "");
