@@ -69,9 +69,11 @@ const Purchase = () => {
         </div>
       </div>
 
-      <Link className="btn btn-primary my-3" to="/purchases/new">
-        New Purchase
-      </Link>
+      {isStaff && (<div>
+        <Link className="btn btn-primary" to="/purchases/new">New Purchase</Link>
+        <Link className="btn btn-primary" style={{ marginLeft: "1em" }} to="/purchase-create-update-from-csv">Purchases From CSV file</Link>
+      </div>
+      )}
 
       <Outlet />
 

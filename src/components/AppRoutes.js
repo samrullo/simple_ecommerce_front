@@ -19,6 +19,7 @@ import Profile from "./user_management/Profile";
 import ForgotPassword from "./user_management/ForgotPassword";
 import ResetPasswordConfirm from "./user_management/ResetPasswordConfirm";
 import ProductCreateUpdateFromCSV from "./products/ProductCreateUpdateFromCSV";
+import PurchaseCreateUpdateFromCSV from "./purchases/PurchaseCreateUpdateFromCSV";
 
 const AppRoutes = () => {
   return (
@@ -40,6 +41,7 @@ const AppRoutes = () => {
         </Route>
       </Route>
       <Route path="/product-create-update-from-csv" element={<ProductCreateUpdateFromCSV/>}/>
+      <Route path="/purchase-create-update-from-csv" element={<PurchaseCreateUpdateFromCSV/>}/>
       <Route path="/about" element={<AboutUs />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

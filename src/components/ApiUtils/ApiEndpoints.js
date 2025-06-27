@@ -18,3 +18,4 @@ export const CREATE_UPDATE_PRODUCTS_FROM_CSV_ENDPOINT=`${API_HOSTNAME}/ecommerce
 export const PURCHASES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/purchases/`;
 export const PURCHASE_CREATE_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/create-purchase/`;
 export const UPDATE_PURCHASE_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/update-purchase/`;
+export const CREATE_UPDATE_PURCHASES_FROM_CSV_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/create-update-purchases-from-csv/`;

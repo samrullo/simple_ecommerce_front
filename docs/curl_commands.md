@@ -4,7 +4,7 @@
 - To get user info
 
 ```bash
-curl -X GET http://localhost:8000/auth/user-info/ -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODc4NjA5LCJpYXQiOjE3NDk4MTYwMTcsImp0aSI6ImZkMWQwMGJlNGM1MzQzODZhMGU1ZTg4YjVhNzViMmEzIiwidXNlcl9pZCI6NX0.oc1eRxZgv3P2_8FnLqiAGOMK1gMx0P2OV26QP72tiS4"
+curl -X GET http://localhost:8000/auth/user-info/ -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMDE4MDMxLCJpYXQiOjE3NTEwMTIxNjUsImp0aSI6IjEyNGRhNDM2MDJmZTRiZWE4OWQ0M2Q2MGMyYWIxZWVlIiwidXNlcl9pZCI6MTd9.gltJ2kFJ7C1vDrarghS4FJfgY642JAGiEOnubuHyn78"
 ```
 
 - To logout
@@ -16,20 +16,20 @@ curl -X POST http://localhost:8000/auth/logout/
 ```bash
 curl -X POST http://localhost:8000/auth/login/ \
      -H "Content-Type: application/json" \
-     -d '{"email": "nohbus.veollurma@gmail.com", "password": "18Rirezu"}'
+     -d '{"email": "nohbus.veollurma@gmail.com", "password": "rire"}'
 ```
 
 - To obtain access and refresh tokens
 ```bash
 curl -X POST http://localhost:8000/auth/token/ \
      -H "Content-Type: application/json" \
-     -d '{"username":"nohbus","email": "nohbus.veollurma@gmail.com", "password": "18Rirezu"}'
+     -d '{"username":"nohbus","email": "nohbus.veollurma@gmail.com", "password": "rire"}'
 ```
 
 - When access token expires
 
 ```bash
-curl -X POST http://localhost:8000/auth/token/refresh/ -H "Content-Type: application/json" -d '{"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0OTkwMjQxNywiaWF0IjoxNzQ5ODE2MDE3LCJqdGkiOiJhNWEzN2RkNmNlZDE0ZjI2OWU2ZWRkOTE3M2EyMDliYSIsInVzZXJfaWQiOjV9.HfP-UdKuzXIaukAwHiUkmYFW7QMFHxGqBoo4-oGJLx8"}'
+curl -X POST http://localhost:8000/auth/token/refresh/ -H "Content-Type: application/json" -d '{"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1MTA5ODU2NSwiaWF0IjoxNzUxMDEyMTY1LCJqdGkiOiIwODMzNDIwMjM0ZjY0YmU4OWZkMDI0NDU3ZjBiMDRiNSIsInVzZXJfaWQiOjE3fQ.8VBRUoVxylKeL0_3AH_sCwnymwY5oHAM4DDN3WVdN54"}'
 ```
 
 latest login response
@@ -47,6 +47,6 @@ access token after refresh
 Toke not valid response example
 
 ```bash
-curl -X POST http://localhost:8000/auth/token/refresh/ -H "Content-Type: application/json" -d '{"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0OTc5NzkxOCwiaWF0IjoxNzQ5NzExNTE4LCJqdGkiOiJiNDViODMxZDQwOGI0YjRjOTFhYjEyZjIzYThkYTNkMSIsInVzZXJfaWQiOjV9.UT6FBBNramhIpUzsxw4yJIJcQqmbhkSFZ-Y3oYXytHc"}'
+curl -X POST http://localhost:8000/auth/token/refresh/ -H "Content-Type: application/json" -d '{"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1MTA5ODU2NSwiaWF0IjoxNzUxMDEyMTY1LCJqdGkiOiIwODMzNDIwMjM0ZjY0YmU4OWZkMDI0NDU3ZjBiMDRiNSIsInVz"}'
 {"detail":"Token is invalid or expired","code":"token_not_valid"}
 ```
