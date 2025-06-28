@@ -24,6 +24,7 @@ const Purchase = () => {
         setPurchases(
           data.map((purchase) => ({
             ...purchase,
+            currency: purchase.currency?.code
           }))
         );
       } catch (error) {
@@ -46,6 +47,7 @@ const Purchase = () => {
     { field: "product_name", headerName: "Product", fieldType: "text" },
     { field: "quantity", headerName: "Quantity", fieldType: "numeric" },
     { field: "price_per_unit", headerName: "Unit Price", fieldType: "numeric" },
+    { field: "currency", headerName: "Currency", fieldType: "text" },
     { field: "purchase_datetime", headerName: "Purchase Date", fieldType: "datetime" },
     { field: "created_at", headerName: "Created At", fieldType: "datetime" },
     { field: "updated_at", headerName: "Updated At", fieldType: "datetime" },

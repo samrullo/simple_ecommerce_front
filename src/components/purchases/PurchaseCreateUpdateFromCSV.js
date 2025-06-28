@@ -36,7 +36,7 @@ const PurchaseCreateUpdateFromCSV = () => {
             <label className="form-label mt-3">
                 <p>Purchases CSV file.</p>
                 <p><strong>Required columns</strong>: <code>product_name, quantity, price_per_unit</code></p>
-                <p><strong>Optional column</strong>: <code>purchase_date</code> (format: YYYY-MM-DD)</p>
+                <p><strong>Optional column</strong>: <code>currency,purchase_date</code> (format: YYYY-MM-DD)</p>
             </label>
             <input
                 type="file"

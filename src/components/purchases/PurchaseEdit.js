@@ -5,7 +5,7 @@ import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
 import {
   PURCHASES_ENDPOINT,
-  UPDATE_PURCHASE_ENDPOINT,PRODUCTS_ENDPOINT
+  UPDATE_PURCHASE_ENDPOINT, PRODUCTS_ENDPOINT, CURRENCIES_ENDPOINT
 } from "../ApiUtils/ApiEndpoints";
 
 
@@ -15,40 +15,57 @@ const PurchaseEdit = () => {
   const { userInfo, setFlashMessages } = useContext(AppContext);
   const { get, put, del } = useApi();
 
-  const [products,setProducts]=useState([])
+  const [products, setProducts] = useState([])
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [productId, setProductId] = useState("");
   const [quantity, setQuantity] = useState(0);
   const [pricePerUnit, setPricePerUnit] = useState("");
+  const [currencies, setCurrencies] = useState([]);
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
   const [purchaseDatetime, setPurchaseDatetime] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-      const fetchProducts = async () => {
-        try {
-          const data = await get(PRODUCTS_ENDPOINT, false);
-          const options = data.map((product) => ({
-            value: product.id,
-            label: product.name,
-          }));
-          setProducts(options);
-        } catch (error) {
-          console.error("Failed to fetch products", error);
-          setProducts([]);
-        }
-      };
-      fetchProducts();
-    }, []);
+    const fetchCurrencies = async () => {
+      try {
+        const fetched_currencies = await get(CURRENCIES_ENDPOINT);
+        const currency_options = fetched_currencies.map((fetched_currency) => ({ value: fetched_currency.code, label: fetched_currency.name }))
+        setCurrencies(currency_options)
+      } catch (err) {
+        console.log(`Error when fetching currencies : ${err}`)
+        setCurrencies([])
+      }
+    }
+    fetchCurrencies()
+  }, [])
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await get(PRODUCTS_ENDPOINT, false);
+        const options = data.map((product) => ({
+          value: product.id,
+          label: product.name,
+        }));
+        setProducts(options);
+      } catch (error) {
+        console.error("Failed to fetch products", error);
+        setProducts([]);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     const loadPurchase = async () => {
       try {
-        const data = await get(`${PURCHASES_ENDPOINT}${purchaseId}/`,true);
+        const data = await get(`${PURCHASES_ENDPOINT}${purchaseId}/`, true);
         setProductId(data.product);
-        setSelectedProduct({value:data.product,label:data.product_name})
+        setSelectedProduct({ value: data.product, label: data.product_name })
         setQuantity(data.quantity);
         setPricePerUnit(data.price_per_unit);
+        setSelectedCurrency({ value: data.currency?.code, label: data.currency?.name })
         setPurchaseDatetime(data.purchase_datetime);
         setHasLoaded(true);
       } catch (err) {
@@ -72,7 +89,7 @@ const PurchaseEdit = () => {
       fieldValue: selectedProduct,
       setFieldValue: setSelectedProduct,
       selectOptions: products,
-    },,
+    }, ,
     {
       fieldType: "number",
       fieldLabel: "Quantity",
@@ -84,6 +101,13 @@ const PurchaseEdit = () => {
       fieldLabel: "Price per Unit",
       fieldValue: pricePerUnit,
       setFieldValue: setPricePerUnit,
+    },
+    {
+      fieldType: "select",
+      fieldLabel: "Currency",
+      fieldValue: selectedCurrency,
+      setFieldValue: setSelectedCurrency,
+      selectOptions: currencies
     },
     {
       fieldType: "datetime-local",
@@ -101,11 +125,12 @@ const PurchaseEdit = () => {
       product_id: productId,
       quantity,
       price_per_unit: pricePerUnit,
+      currency:selectedCurrency.value,
       purchase_datetime: purchaseDatetime,
     };
 
     try {
-      await put(`${UPDATE_PURCHASE_ENDPOINT}${purchaseId}/`, payload,true);
+      await put(`${UPDATE_PURCHASE_ENDPOINT}${purchaseId}/`, payload, true);
       setFlashMessages([
         { category: "success", message: "Purchase updated successfully." },
       ]);

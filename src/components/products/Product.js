@@ -32,7 +32,7 @@ const Product = () => {
               brand: product.brand?.name || "",
               tags: product.tags?.map((tag) => tag.name).join(", ") || "",
               price: activePrice?.price || "",
-              currency:activePrice?.currency?.code || "",
+              currency: activePrice?.currency?.code || "",
               inventory: activeInventory || "",
             };
           })
@@ -59,23 +59,23 @@ const Product = () => {
   };
 
   const baseColumns = [
-    { field: "image", headerName: "Image" },
+    { field: "image", headerName: "Image", fieldType: "image" },
     { field: "name", headerName: "Product Name" },
     { field: "sku", headerName: "SKU" },
     { field: "category", headerName: "Category" },
     { field: "brand", headerName: "Brand" },
     { field: "tags", headerName: "Tags" },
     { field: "price", headerName: "Price" },
-    {field:"currency", headerName: "Currency"},
+    { field: "currency", headerName: "Currency" },
     { field: "inventory", headerName: "Stock" },
 
   ];
 
   const columns = isStaff
     ? [...baseColumns,
-    { field: "created_at", headerName: "Created At" },
-    { field: "updated_at", headerName: "Updated At" },
-    { field: "is_active", headerName: "Active" }
+    { field: "created_at", headerName: "Created At", fieldType: "datetime" },
+    { field: "updated_at", headerName: "Updated At", fieldType: "datetime" },
+    { field: "is_active", headerName: "Active", fieldType: "datetime" }
     ]
     : baseColumns;
 
@@ -101,7 +101,7 @@ const Product = () => {
 
       {isStaff && (<div>
         <Link className="btn btn-primary" to="/products/new">New Product</Link>
-        <Link className="btn btn-primary" style={{marginLeft:"1em"}} to="/product-create-update-from-csv">Products From CSV file</Link>
+        <Link className="btn btn-primary" style={{ marginLeft: "1em" }} to="/product-create-update-from-csv">Products From CSV file</Link>
       </div>
       )}
 

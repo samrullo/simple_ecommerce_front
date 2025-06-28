@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import GenericNewData from "../GenericDataComponents/GenericNewData";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
-import { PRODUCTS_ENDPOINT, PURCHASE_CREATE_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import { PRODUCTS_ENDPOINT, PURCHASE_CREATE_ENDPOINT,CURRENCIES_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 
 const PurchaseNew = () => {
   const { get, post } = useApi();
@@ -14,8 +14,24 @@ const PurchaseNew = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [pricePerUnit, setPricePerUnit] = useState("");
+  const [currencies, setCurrencies] = useState([]);
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
   const [purchaseDatetime, setPurchaseDatetime] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCurrencies = async () => {
+      try {
+        const fetched_currencies = await get(CURRENCIES_ENDPOINT);
+        const currency_options = fetched_currencies.map((fetched_currency) => ({ value: fetched_currency.code, label: fetched_currency.name }))
+        setCurrencies(currency_options)
+      } catch (err) {
+        console.log(`Error when fetching currencies : ${err}`)
+        setCurrencies([])
+      }
+    }
+    fetchCurrencies()
+  }, [])
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -55,6 +71,12 @@ const PurchaseNew = () => {
       fieldLabel: "Price per Unit",
       fieldValue: pricePerUnit,
       setFieldValue: setPricePerUnit,
+    }, {
+      fieldType: "select",
+      fieldLabel: "Currency",
+      fieldValue: selectedCurrency,
+      setFieldValue: setSelectedCurrency,
+      selectOptions: currencies
     },
     {
       fieldType: "datetime-local",
@@ -79,6 +101,7 @@ const PurchaseNew = () => {
           product_id: selectedProduct.value,
           quantity,
           price_per_unit: pricePerUnit,
+          currency:selectedCurrency.value,
           purchase_datetime: purchaseDatetime,
         },
         true
