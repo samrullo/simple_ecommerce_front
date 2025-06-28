@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
-import { PRODUCTS_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import { PRODUCTS_ENDPOINT, PRODUCTS_WITH_IMAGES_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 
 const Product = () => {
   const { get } = useApi();
@@ -20,11 +20,15 @@ const Product = () => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const data = await get(PRODUCTS_ENDPOINT, false);
+        const data = await get(PRODUCTS_WITH_IMAGES_ENDPOINT, false);
+        const imageBaseUrl = process.env.REACT_APP_IMAGE_BASE_URL || "http://localhost:8000";
+
         setProducts(
           data.map((product) => {
             const activePrice = product.price?.find((p) => p.end_date === null);
             const activeInventory = product.inventory?.reduce((total, inv) => total + inv.stock, 0) || 0;
+            const imagePath = product.icon_images?.[0]?.image;
+            const image = imagePath ? `${imageBaseUrl}${imagePath}` : null;
 
             return {
               ...product,
@@ -34,6 +38,7 @@ const Product = () => {
               price: activePrice?.price || "",
               currency: activePrice?.currency?.code || "",
               inventory: activeInventory || "",
+              image: image
             };
           })
         );
