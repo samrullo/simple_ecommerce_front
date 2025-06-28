@@ -43,12 +43,12 @@ const Purchase = () => {
   if (!isStaff) return <p>You are not authorized to view purchases.</p>;
 
   const columns = [
-    { field: "product_name", headerName: "Product" },
-    { field: "quantity", headerName: "Quantity" },
-    { field: "price_per_unit", headerName: "Unit Price" },
-    { field: "purchase_datetime", headerName: "Purchase Date" },
-    { field: "created_at", headerName: "Created At" },
-    { field: "updated_at", headerName: "Updated At" },
+    { field: "product_name", headerName: "Product", fieldType: "text" },
+    { field: "quantity", headerName: "Quantity", fieldType: "numeric" },
+    { field: "price_per_unit", headerName: "Unit Price", fieldType: "numeric" },
+    { field: "purchase_datetime", headerName: "Purchase Date", fieldType: "datetime" },
+    { field: "created_at", headerName: "Created At", fieldType: "datetime" },
+    { field: "updated_at", headerName: "Updated At", fieldType: "datetime" },
   ];
 
   return (

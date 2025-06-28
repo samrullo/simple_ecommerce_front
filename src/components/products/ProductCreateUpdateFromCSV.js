@@ -38,7 +38,7 @@ const ProductCreateUpdateFromCSV = () => {
             <label className="form-label mt-3">
                 <p>Products csv file. </p>
                 <p>Required columns : <code>product_name,category_name,price,stock</code></p>
-                <p>Optional columns : <code>description,brand_name,tag_names,sku</code></p>
+                <p>Optional columns : <code>description,currency,brand_name,tag_names,sku</code></p>
             </label>
             <input type="file" className="form-control" accept=".csv" onChange={(e) => setFile(e.target.files[0])} />
             <button className="btn btn-primary mt-3" onClick={handleUpload} disabled={uploading}>{uploading ? "Uploading..." : "Upload"}</button>

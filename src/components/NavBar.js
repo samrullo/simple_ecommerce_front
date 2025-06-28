@@ -6,8 +6,10 @@ import Logout from "./user_management/Logout";
 
 const NavBar = ({ title }) => {
   const {
-    isAuthenticated,
+    isAuthenticated,userInfo
   } = useContext(AppContext);
+
+  const isStaff = userInfo?.is_staff || userInfo?.is_superuser;
 
 
 
@@ -29,6 +31,7 @@ const NavBar = ({ title }) => {
           <Link to="/products" className="nav-link">
             Products
           </Link>
+          {isStaff && (<Link to="/purchases" className="nav-link">Purchases</Link>)}
           <Link to="/contacts" className="nav-link">
             Contacts
           </Link>

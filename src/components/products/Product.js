@@ -32,6 +32,7 @@ const Product = () => {
               brand: product.brand?.name || "",
               tags: product.tags?.map((tag) => tag.name).join(", ") || "",
               price: activePrice?.price || "",
+              currency:activePrice?.currency?.code || "",
               inventory: activeInventory || "",
             };
           })
@@ -65,6 +66,7 @@ const Product = () => {
     { field: "brand", headerName: "Brand" },
     { field: "tags", headerName: "Tags" },
     { field: "price", headerName: "Price" },
+    {field:"currency", headerName: "Currency"},
     { field: "inventory", headerName: "Stock" },
 
   ];
