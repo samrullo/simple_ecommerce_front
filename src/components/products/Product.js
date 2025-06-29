@@ -3,18 +3,39 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
-import { PRODUCTS_ENDPOINT, PRODUCTS_WITH_IMAGES_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import { PRODUCTS_ENDPOINT, PRODUCTS_WITH_IMAGES_ENDPOINT, FXRATES_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 
 const Product = () => {
+  const { userInfo,baseCurrency,setBaseCurrency } = useContext(AppContext);
   const { get } = useApi();
   const navigate = useNavigate();
   const { state = {} } = useLocation();
   const { timestamp } = state ?? {};
   const [products, setProducts] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);  
+  const [fxRates, setFxRates] = useState([]);
 
-  const { userInfo } = useContext(AppContext);
+  useEffect(() => {
+    const fetchFxRates = async () => {
+      const rates = await get(FXRATES_ENDPOINT, false); // Your actual endpoint
+      const simplified = rates.map(rate => ({
+        currency_from: rate.currency_from.code,
+        currency_to: rate.currency_to.code,
+        rate: parseFloat(rate.rate)
+      }));
+      setFxRates(simplified);
+    };
+    fetchFxRates();
+  }, []);
+
+  const convertPrice = (price, from, to) => {
+    if (from === to) return price;
+    const fx = fxRates.find(fx => fx.currency_from === from && fx.currency_to === to);
+    return fx ? price * fx.rate : price;
+  };
+
+  
   const isStaff = userInfo?.is_staff || userInfo?.is_superuser;
 
   useEffect(() => {
@@ -30,6 +51,9 @@ const Product = () => {
             const imagePath = product.icon_images?.[0]?.image;
             const image = imagePath ? `${imageBaseUrl}${imagePath}` : null;
 
+            const base = baseCurrency;
+            const converted = convertPrice(activePrice.price, activePrice.currency.code, base);
+
             return {
               ...product,
               category: product.category?.name || "",
@@ -37,9 +61,11 @@ const Product = () => {
               tags: product.tags?.map((tag) => tag.name).join(", ") || "",
               price: activePrice?.price || "",
               currency: activePrice?.currency?.code || "",
+              price_in_base_currency: converted,
+              base_currency: base,
               inventory: activeInventory || "",
               image: image,
-              add_to_cart:""
+              add_to_cart: ""
             };
           })
         );
@@ -49,7 +75,7 @@ const Product = () => {
     };
 
     getProducts();
-  }, [timestamp]);
+  }, [timestamp,baseCurrency,fxRates]);
 
   useEffect(() => {
     if (editMode && selectedRowData && isStaff) {
@@ -73,6 +99,8 @@ const Product = () => {
     { field: "tags", headerName: "Tags" },
     { field: "price", headerName: "Price" },
     { field: "currency", headerName: "Currency" },
+    { field: "price_in_base_currency", headerName: "Price in Base Currency" },
+    { field: "base_currency", headerName: "Base Currency" },
     { field: "inventory", headerName: "Stock" },
     {
       field: "add_to_cart",
