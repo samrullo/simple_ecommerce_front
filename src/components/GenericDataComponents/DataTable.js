@@ -2,6 +2,7 @@ import { AgGridReact } from "ag-grid-react";
 import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
 import { Link } from "react-router-dom";
+
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-community/styles/ag-theme-balham.css";
@@ -17,10 +18,11 @@ const DataTable = ({
     timezone = "Asia/Tokyo",
 }) => {
     const [rowData, setRowData] = useState(Array.isArray(data) ? data : []);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
-        setRowData(Array.isArray(data) ? data : []);
-    }, [data]);
+        filterRows(searchQuery);
+    }, [data, searchQuery]);
 
     const defaultFilterParams = {
         filterOptions: ["contains", "notContains", "startsWith", "endsWith"],
@@ -29,23 +31,6 @@ const DataTable = ({
 
     const isNumeric = (value) =>
         typeof value === "number" || (!isNaN(value) && value !== "");
-
-
-
-
-    const linkCellRenderer = (params) => {
-        const label = params.colDef.cellRendererParams?.label || "View";
-        const className = params.colDef.cellRendererParams?.className || "btn btn-link";
-        const linkTo = params.colDef.cellRendererParams?.linkTo;
-
-        const path = typeof linkTo === "function" ? linkTo(params.data) : linkTo;
-
-        return (
-            <Link to={path} className={className} onClick={(e) => e.stopPropagation()}>
-                {label}
-            </Link>
-        );
-    };
 
     const imageCellRenderer = (params) => {
         if (!params.value) return null;
@@ -63,15 +48,26 @@ const DataTable = ({
         );
     };
 
+    const linkCellRenderer = (params) => {
+        const label = params.colDef.cellRendererParams?.label || "View";
+        const className = params.colDef.cellRendererParams?.className || "btn btn-link";
+        const linkTo = params.colDef.cellRendererParams?.linkTo;
+        const path = typeof linkTo === "function" ? linkTo(params.data) : linkTo;
+        return (
+            <Link to={path} className={className} onClick={(e) => e.stopPropagation()}>
+                {label}
+            </Link>
+        );
+    };
+
     const getDefaultValueFormatter = (fieldName, fieldType) => {
         const sampleValue = data?.find((row) => row[fieldName] != null)?.[fieldName];
 
         if (fieldType === "datetime") {
-            return (params) => {
-                return params.value
+            return (params) =>
+                params.value
                     ? moment.utc(params.value).tz(timezone).format("YYYY-MM-DD HH:mm:ss")
                     : "";
-            }
         }
 
         if (fieldType === "numeric" || isNumeric(sampleValue)) {
@@ -128,7 +124,7 @@ const DataTable = ({
                 ...(key === "image" && {
                     cellRenderer: imageCellRenderer,
                     filter: false,
-                }),                
+                }),
                 valueFormatter:
                     key !== "image" ? getDefaultValueFormatter(key, null) : undefined,
                 cellStyle: isNumericField ? { textAlign: "right" } : undefined,
@@ -141,8 +137,35 @@ const DataTable = ({
         )
         : baseColumnDefs;
 
+    const filterRows = (query) => {
+        if (!query) {
+            setRowData(Array.isArray(data) ? data : []);
+            return;
+        }
+
+        const lowerQuery = query.toLowerCase();
+        const filtered = data.filter((row) =>
+            columns.some((col) => {
+                const fieldType = col.fieldType || null;
+                if (fieldType === "image" || fieldType === "numeric" || fieldType === "datetime") return false;
+                const value = row[col.field];
+                return typeof value === "string" && value.toLowerCase().includes(lowerQuery);
+            })
+        );
+        setRowData(filtered);
+    };
+
     return (
         <div className="container mt-5">
+            <div className="mb-3">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search text fields..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
             <div
                 className="ag-theme-material"
                 style={{ height: "400px", width: `${width_pct}%` }}
