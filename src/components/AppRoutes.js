@@ -22,6 +22,8 @@ import ProductCreateUpdateFromCSV from "./products/ProductCreateUpdateFromCSV";
 import PurchaseCreateUpdateFromCSV from "./purchases/PurchaseCreateUpdateFromCSV";
 import AddToCart from "./orders/AddToCart";
 import ShoppingCart from "./orders/ShoppingCart";
+import OrderSummary from "./orders/OrderSummary";
+import OrderHistory from "./orders/OrderHistory";
 
 const AppRoutes = () => {
   return (
@@ -46,6 +48,8 @@ const AppRoutes = () => {
       <Route path="/purchase-create-update-from-csv" element={<PurchaseCreateUpdateFromCSV />} />
       <Route path="/add-product-to-cart/:id" element={<AddToCart />} />
       <Route path="/shopping-cart" element={<ShoppingCart />} />
+      <Route path="/order-summary/:orderId" element={<OrderSummary />} />
+      <Route path="/order-history" element={<OrderHistory/>}/>
       <Route path="/about" element={<AboutUs />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

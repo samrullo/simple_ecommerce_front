@@ -22,7 +22,7 @@ const MainPage = () => {
       }
     };
     fetchCurrencies();
-  }, [get]);
+  }, []);
 
   const handleCurrencyChange = (e) => {
     setBaseCurrency(e.target.value);
@@ -35,8 +35,8 @@ const MainPage = () => {
         <NavBar title="Simple Ecommerce" />
 
         {/* Dynamic Base Currency Dropdown */}
-        <div className="mb-3">
-          <label htmlFor="baseCurrency" className="form-label fw-bold">
+        <div className="mb-3 d-flex align-items-center">
+          <label htmlFor="baseCurrency" className="form-label fw-bold me-3 mb-0" style={{ minWidth: "130px" }}>
             Base Currency:
           </label>
           <select
