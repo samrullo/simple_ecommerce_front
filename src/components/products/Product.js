@@ -38,7 +38,8 @@ const Product = () => {
               price: activePrice?.price || "",
               currency: activePrice?.currency?.code || "",
               inventory: activeInventory || "",
-              image: image
+              image: image,
+              add_to_cart:""
             };
           })
         );
@@ -73,6 +74,16 @@ const Product = () => {
     { field: "price", headerName: "Price" },
     { field: "currency", headerName: "Currency" },
     { field: "inventory", headerName: "Stock" },
+    {
+      field: "add_to_cart",
+      headerName: "",
+      fieldType: "link",
+      cellRendererParams: {
+        label: "Add To Cart",
+        linkTo: (row) => `/add-product-to-cart/${row.id}`,
+        className: "btn btn-sm btn-success"
+      }
+    }
 
   ];
 

@@ -20,6 +20,8 @@ import ForgotPassword from "./user_management/ForgotPassword";
 import ResetPasswordConfirm from "./user_management/ResetPasswordConfirm";
 import ProductCreateUpdateFromCSV from "./products/ProductCreateUpdateFromCSV";
 import PurchaseCreateUpdateFromCSV from "./purchases/PurchaseCreateUpdateFromCSV";
+import AddToCart from "./orders/AddToCart";
+import ShoppingCart from "./orders/ShoppingCart";
 
 const AppRoutes = () => {
   return (
@@ -30,7 +32,7 @@ const AppRoutes = () => {
           <Route path="new" element={<ProductNew />} />
           <Route path="edit/:productId" element={<ProductEdit />} />
         </Route>
-        
+
         <Route path="/purchases" element={<Purchase />}>
           <Route path="new" element={<PurchaseNew />} />
           <Route path="edit/:purchaseId" element={<PurchaseEdit />} />
@@ -40,8 +42,10 @@ const AppRoutes = () => {
           <Route path="edit/:contactId" element={<ContactEdit />} />
         </Route>
       </Route>
-      <Route path="/product-create-update-from-csv" element={<ProductCreateUpdateFromCSV/>}/>
-      <Route path="/purchase-create-update-from-csv" element={<PurchaseCreateUpdateFromCSV/>}/>
+      <Route path="/product-create-update-from-csv" element={<ProductCreateUpdateFromCSV />} />
+      <Route path="/purchase-create-update-from-csv" element={<PurchaseCreateUpdateFromCSV />} />
+      <Route path="/add-product-to-cart/:id" element={<AddToCart />} />
+      <Route path="/shopping-cart" element={<ShoppingCart />} />
       <Route path="/about" element={<AboutUs />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -52,7 +56,7 @@ const AppRoutes = () => {
         path="/reset-password-confirm/:uid/:token"
         element={<ResetPasswordConfirm />}
       />
-      <Route path="/verify-email/:key" element={<EmailVerification/>}/>
+      <Route path="/verify-email/:key" element={<EmailVerification />} />
     </Routes>
   );
 };

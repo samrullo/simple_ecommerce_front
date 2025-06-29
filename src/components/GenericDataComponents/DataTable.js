@@ -1,7 +1,7 @@
 import { AgGridReact } from "ag-grid-react";
 import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
-
+import { Link } from "react-router-dom";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-community/styles/ag-theme-balham.css";
@@ -29,6 +29,23 @@ const DataTable = ({
 
     const isNumeric = (value) =>
         typeof value === "number" || (!isNaN(value) && value !== "");
+
+
+
+
+    const linkCellRenderer = (params) => {
+        const label = params.colDef.cellRendererParams?.label || "View";
+        const className = params.colDef.cellRendererParams?.className || "btn btn-link";
+        const linkTo = params.colDef.cellRendererParams?.linkTo;
+
+        const path = typeof linkTo === "function" ? linkTo(params.data) : linkTo;
+
+        return (
+            <Link to={path} className={className} onClick={(e) => e.stopPropagation()}>
+                {label}
+            </Link>
+        );
+    };
 
     const imageCellRenderer = (params) => {
         if (!params.value) return null;
@@ -84,6 +101,11 @@ const DataTable = ({
                     cellRenderer: imageCellRenderer,
                     filter: false,
                 }),
+                ...(fieldType === "link" && {
+                    cellRenderer: linkCellRenderer,
+                    filter: false,
+                    sortable: false,
+                }),
                 valueFormatter:
                     col.valueFormatter ??
                     (fieldType !== "image" ? getDefaultValueFormatter(col.field, fieldType) : undefined),
@@ -106,7 +128,7 @@ const DataTable = ({
                 ...(key === "image" && {
                     cellRenderer: imageCellRenderer,
                     filter: false,
-                }),
+                }),                
                 valueFormatter:
                     key !== "image" ? getDefaultValueFormatter(key, null) : undefined,
                 cellStyle: isNumericField ? { textAlign: "right" } : undefined,
