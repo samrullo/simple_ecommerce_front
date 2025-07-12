@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import GenericNewData from "../GenericDataComponents/GenericNewData";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
-import { CREATE_PRODUCT_ENDPOINT, CURRENCIES_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import { CREATE_PRODUCT_ENDPOINT, CURRENCIES_ENDPOINT, CATEGORIES_ENDPOINT, BRANDS_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 
 const ProductNew = () => {
-  const { get, put, post, patch, del } = useApi()
+  const { get, post } = useApi();
   const navigate = useNavigate();
   const { userInfo, setFlashMessages } = useContext(AppContext);
 
@@ -22,78 +22,148 @@ const ProductNew = () => {
   const [tagsText, setTagsText] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+
+  const [isNewCategory, setIsNewCategory] = useState(false);
+  const [isNewBrand, setIsNewBrand] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+
   useEffect(() => {
     const fetchCurrencies = async () => {
       try {
-        const fetched_currencies = await get(CURRENCIES_ENDPOINT);
-        const currency_options = fetched_currencies.map((fetched_currency) => ({ value: fetched_currency.code, label: fetched_currency.name }))
-        setCurrencies(currency_options)
+        const data = await get(CURRENCIES_ENDPOINT);
+        const options = data.map((c) => ({ value: c.code, label: c.name }));
+        setCurrencies(options);
       } catch (err) {
-        console.log(`Error when fetching currencies : ${err}`)
-        setCurrencies([])
+        console.log("Error fetching currencies:", err);
+        setCurrencies([]);
       }
-    }
-    fetchCurrencies()
-  }, [])
+    };
+
+    const fetchCategories = async () => {
+      try {
+        const data = await get(CATEGORIES_ENDPOINT);
+        setCategories(data.map((c) => ({ value: c.name, label: c.name })));
+      } catch (err) {
+        console.log("Failed to fetch categories", err);
+      }
+    };
+
+    const fetchBrands = async () => {
+      try {
+        const data = await get(BRANDS_ENDPOINT);
+        setBrands(data.map((b) => ({ value: b.name, label: b.name })));
+      } catch (err) {
+        console.log("Failed to fetch brands", err);
+      }
+    };
+
+    fetchCurrencies();
+    fetchCategories();
+    fetchBrands();
+  }, []);
 
   if (!userInfo?.is_staff && !userInfo?.is_superuser) {
     return <p>You are not authorized to create products.</p>;
   }
 
-
-
   const formFields = [
     {
+      fieldName: "name",
       fieldType: "text",
       fieldLabel: "Name",
       fieldValue: name,
       setFieldValue: setName,
     },
     {
+      fieldName: "sku",
       fieldType: "text",
       fieldLabel: "SKU",
       fieldValue: sku,
       setFieldValue: setSku,
     },
     {
+      fieldName: "description",
       fieldType: "textarea",
       fieldLabel: "Description",
       fieldValue: description,
       setFieldValue: setDescription,
     },
     {
+      fieldName: "price",
       fieldType: "number",
       fieldLabel: "Price",
       fieldValue: price,
       setFieldValue: setPrice,
     },
     {
+      fieldName: "currency",
       fieldType: "select",
       fieldLabel: "Currency",
       fieldValue: selectedCurrency,
       setFieldValue: setSelectedCurrency,
-      selectOptions: currencies
+      selectOptions: currencies,
     },
     {
+      fieldName: "stock",
       fieldType: "number",
       fieldLabel: "Initial Inventory (Stock)",
       fieldValue: stock,
       setFieldValue: setStock,
     },
     {
-      fieldType: "text",
-      fieldLabel: "Category",
+      fieldName: "category",
+      fieldType: isNewCategory ? "text" : "select",
+      fieldLabel: (
+        <div className="d-flex gap-4 mb-3">
+          Category
+          <div className="form-check form-switch">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={isNewCategory}
+              onChange={(e) => {
+                setIsNewCategory(e.target.checked);
+                setCategoryName("");
+              }}
+              id="toggleCategory"
+            />
+            <label className="form-check-label" htmlFor="toggleCategory">
+              Add New Category
+            </label>
+          </div></div>),
       fieldValue: categoryName,
       setFieldValue: setCategoryName,
+      ...(isNewCategory ? {} : { selectOptions: categories }),
     },
     {
-      fieldType: "text",
-      fieldLabel: "Brand",
+      fieldName: "brand",
+      fieldType: isNewBrand ? "text" : "select",
+      fieldLabel: (
+        <div className="d-flex gap-4 mb-3">
+          Brand
+          <div className="form-check form-switch">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={isNewBrand}
+              onChange={(e) => {
+                setIsNewBrand(e.target.checked);
+                setBrandName("");
+              }}
+              id="toggleBrand"
+            />
+            <label className="form-check-label" htmlFor="toggleBrand">
+              Add New Brand
+            </label>
+          </div>
+        </div>),
       fieldValue: brandName,
       setFieldValue: setBrandName,
+      ...(isNewBrand ? {} : { selectOptions: brands }),
     },
     {
+      fieldName: "tags",
       fieldType: "text",
       fieldLabel: "Tags (comma-separated)",
       fieldValue: tagsText,
@@ -117,8 +187,8 @@ const ProductNew = () => {
     formData.append("price", price);
     formData.append("currency", selectedCurrency.value);
     formData.append("stock", stock);
-    formData.append("category_name", categoryName);
-    formData.append("brand_name", brandName);
+    formData.append("category_name", isNewCategory ? categoryName : categoryName.value);
+    formData.append("brand_name", isNewBrand ? brandName : brandName.value);
     formData.append("tags", tagsText);
     if (image) formData.append("image", image);
 
@@ -140,20 +210,13 @@ const ProductNew = () => {
   };
 
   return (
-    <>
-      {loading && (
-        <div className="alert alert-info" role="alert">
-          Creating product...
-        </div>
-      )}
-      <GenericNewData
-        title="New Product"
-        formFields={formFields}
-        handleNewData={handleNewData}
-        submitButtonLabel={loading ? "Submitting..." : "Create Product"}
-        disableSubmit={loading}
-      />
-    </>
+    <GenericNewData
+      title="New Product"
+      formFields={formFields}
+      handleNewData={handleNewData}
+      submitButtonLabel={loading ? "Submitting..." : "Create Product"}
+      disableSubmit={loading}
+    />
   );
 };
 

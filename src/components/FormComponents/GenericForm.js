@@ -1,19 +1,25 @@
 import FormField from "./FormField";
 
-const GenericForm = ({ formFields, onFormSubmit, submitButtonLabel = "Submit", disableSubmit = false }) => {
+const GenericForm = ({
+  formFields,
+  onFormSubmit,
+  submitButtonLabel = "Submit",
+  disableSubmit = false,
+}) => {
   return (
     <form className="form" onSubmit={onFormSubmit}>
-      {formFields.map(({ fieldType, fieldLabel, fieldValue, setFieldValue, selectOptions, fieldProps }) => (
+      {formFields.map((field, index) => (
         <FormField
-          key={fieldLabel}
-          fieldType={fieldType}
-          fieldLabel={fieldLabel}
-          fieldValue={fieldValue}
-          setFieldValue={setFieldValue}
-          selectOptions={selectOptions}
-          fieldProps={fieldProps}
+          key={field.fieldName || index}
+          fieldType={field.fieldType}
+          fieldLabel={field.fieldLabel}
+          fieldValue={field.fieldValue}
+          setFieldValue={field.setFieldValue}
+          selectOptions={field.selectOptions}
+          fieldProps={field.fieldProps}
         />
       ))}
+
       <div className="form-group">
         <button
           type="submit"

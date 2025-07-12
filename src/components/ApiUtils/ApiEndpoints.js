@@ -17,6 +17,8 @@ export const PRODUCTS_WITH_IMAGES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/product
 export const CREATE_PRODUCT_ENDPOINT =`${API_HOSTNAME}/ecommerce/v1/create-product/`;
 export const UPDATE_PRODUCT_ENDPOINT =`${API_HOSTNAME}/ecommerce/v1/update-product/`;
 export const CREATE_UPDATE_PRODUCTS_FROM_CSV_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/create-update-products-from-csv/`;
+export const CATEGORIES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/categories/`;
+export const BRANDS_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/brands/`;
 
 export const PURCHASES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/purchases/`;
 export const PURCHASE_CREATE_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/create-purchase/`;
