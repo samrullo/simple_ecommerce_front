@@ -2,13 +2,18 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import GenericEditData from "../GenericDataComponents/GenericEditData";
 import AppContext from "../../AppContext";
-import { PRODUCTS_ENDPOINT, UPDATE_PRODUCT_ENDPOINT,CURRENCIES_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import {
+  PRODUCTS_ENDPOINT,
+  UPDATE_PRODUCT_ENDPOINT,
+  CURRENCIES_ENDPOINT,
+  CATEGORIES_ENDPOINT,
+  BRANDS_ENDPOINT,
+} from "../ApiUtils/ApiEndpoints";
 import { useApi } from "../hooks/useApi";
 
 const ProductEdit = () => {
   const { productId } = useParams();
   const [hasLoaded, setHasLoaded] = useState(false);
-
   const navigate = useNavigate();
   const { userInfo, setFlashMessages } = useContext(AppContext);
   const { get, put, del } = useApi();
@@ -26,19 +31,45 @@ const ProductEdit = () => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const [isNewCategory, setIsNewCategory] = useState(false);
+  const [isNewBrand, setIsNewBrand] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+
   useEffect(() => {
     const fetchCurrencies = async () => {
       try {
-        const fetched_currencies = await get(CURRENCIES_ENDPOINT);
-        const currency_options = fetched_currencies.map((fetched_currency) => ({ value: fetched_currency.code, label: fetched_currency.name }))
-        setCurrencies(currency_options)
+        const data = await get(CURRENCIES_ENDPOINT);
+        const options = data.map((c) => ({ value: c.code, label: c.name }));
+        setCurrencies(options);
       } catch (err) {
-        console.log(`Error when fetching currencies : ${err}`)
-        setCurrencies([])
+        console.log("Error fetching currencies:", err);
+        setCurrencies([]);
       }
-    }
-    fetchCurrencies()
-  }, [])
+    };
+
+    const fetchCategories = async () => {
+      try {
+        const data = await get(CATEGORIES_ENDPOINT);
+        setCategories(data.map((c) => ({ value: c.name, label: c.name })));
+      } catch (err) {
+        console.log("Failed to fetch categories", err);
+      }
+    };
+
+    const fetchBrands = async () => {
+      try {
+        const data = await get(BRANDS_ENDPOINT);
+        setBrands(data.map((b) => ({ value: b.name, label: b.name })));
+      } catch (err) {
+        console.log("Failed to fetch brands", err);
+      }
+    };
+
+    fetchCurrencies();
+    fetchCategories();
+    fetchBrands();
+  }, []);
 
   useEffect(() => {
     if (!hasLoaded) {
@@ -48,16 +79,16 @@ const ProductEdit = () => {
           setName(data.name);
           setSku(data.sku);
           setDescription(data.description || "");
-          const activePrice = data.price?.find(p => p.end_date === null);          
+          const activePrice = data.price?.find((p) => p.end_date === null);
           setPrice(activePrice?.price || "");
           const currency_code = activePrice?.currency?.code || "";
           const currency_name = activePrice?.currency?.name || "";
-          setSelectedCurrency({value:currency_code,label:currency_name})
+          setSelectedCurrency({ value: currency_code, label: currency_name });
           const activeInventory = data.inventory?.reduce((total, inv) => total + inv.stock, 0) || 0;
           setStock(activeInventory || 1);
-          setCategoryName(data.category?.name || "");
-          setBrandName(data.brand?.name || "");
-          setTagsText(data.tags?.map(t => t.name).join(", ") || "");
+          setCategoryName({ value: data.category?.name, label: data.category?.name });
+          setBrandName({ value: data.brand?.name, label: data.brand?.name });
+          setTagsText(data.tags?.map((t) => t.name).join(", ") || "");
           setHasLoaded(true);
         } catch (err) {
           console.error("Failed to fetch product:", err);
@@ -103,7 +134,7 @@ const ProductEdit = () => {
       fieldLabel: "Currency",
       fieldValue: selectedCurrency,
       setFieldValue: setSelectedCurrency,
-      selectOptions: currencies
+      selectOptions: currencies,
     },
     {
       fieldType: "number",
@@ -112,16 +143,56 @@ const ProductEdit = () => {
       setFieldValue: setStock,
     },
     {
-      fieldType: "text",
-      fieldLabel: "Category",
+      fieldType: isNewCategory ? "text" : "select",
+      fieldLabel: (
+        <div className="d-flex gap-4 mb-3">
+          Category
+          <div className="form-check form-switch">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={isNewCategory}
+              onChange={(e) => {
+                setIsNewCategory(e.target.checked);
+                setCategoryName("");
+              }}
+              id="toggleCategory"
+            />
+            <label className="form-check-label" htmlFor="toggleCategory">
+              Add New Category
+            </label>
+          </div>
+        </div>
+      ),
       fieldValue: categoryName,
       setFieldValue: setCategoryName,
+      ...(isNewCategory ? {} : { selectOptions: categories }),
     },
     {
-      fieldType: "text",
-      fieldLabel: "Brand",
+      fieldType: isNewBrand ? "text" : "select",
+      fieldLabel: (
+        <div className="d-flex gap-4 mb-3">
+          Brand
+          <div className="form-check form-switch">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={isNewBrand}
+              onChange={(e) => {
+                setIsNewBrand(e.target.checked);
+                setBrandName("");
+              }}
+              id="toggleBrand"
+            />
+            <label className="form-check-label" htmlFor="toggleBrand">
+              Add New Brand
+            </label>
+          </div>
+        </div>
+      ),
       fieldValue: brandName,
       setFieldValue: setBrandName,
+      ...(isNewBrand ? {} : { selectOptions: brands }),
     },
     {
       fieldType: "text",
@@ -145,12 +216,12 @@ const ProductEdit = () => {
     formData.append("sku", sku);
     formData.append("description", description);
     formData.append("price", price);
-    formData.append("currency",selectedCurrency.value);
+    formData.append("currency", selectedCurrency.value);
     formData.append("stock", stock);
-    formData.append("category_name", categoryName);
-    formData.append("brand_name", brandName);
+    formData.append("category_name", isNewCategory ? categoryName : categoryName.value);
+    formData.append("brand_name", isNewBrand ? brandName : brandName.value);
     formData.append("tags", tagsText);
-    if (image) formData.append("image", image); // optional
+    if (image) formData.append("image", image);
 
     try {
       await put(`${UPDATE_PRODUCT_ENDPOINT}${productId}/`, formData, true);

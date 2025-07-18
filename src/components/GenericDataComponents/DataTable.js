@@ -176,6 +176,8 @@ const DataTable = ({
                     onRowClicked={onRowClick}
                     enableCellTextSelection={true}
                     enableClipboard={true}
+                    domLayout="autoHeight"
+                    tooltipShowDelay={300}
                 />
             </div>
         </div>

@@ -92,7 +92,7 @@ const Product = () => {
 
   const baseColumns = [
     { field: "image", headerName: "Image", fieldType: "image" },
-    { field: "name", headerName: "Product Name" },
+    { field: "name", headerName: "Product Name" ,tooltipField:"name"},
     { field: "sku", headerName: "SKU" },
     { field: "category", headerName: "Category" },
     { field: "brand", headerName: "Brand" },
