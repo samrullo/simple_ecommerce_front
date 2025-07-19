@@ -8,6 +8,8 @@ import Contact from "./contacts/Contact";
 import ContactNew from "./contacts/ContactNew";
 import ContactEdit from "./contacts/ContactEdit";
 import Purchase from "./purchases/Purchase";
+import PurchaseByDateSummary from "./purchases/PurchaseByDateSummary";
+import PurchaseByDateDetail from "./purchases/PurchaseByDateDetails";
 import PurchaseNew from "./purchases/PurchaseNew";
 import PurchaseEdit from "./purchases/PurchaseEdit";
 import AboutUs from "./AboutUs";
@@ -39,6 +41,7 @@ const AppRoutes = () => {
           <Route path="new" element={<PurchaseNew />} />
           <Route path="edit/:purchaseId" element={<PurchaseEdit />} />
         </Route>
+
         <Route path="/contacts" element={<Contact />}>
           <Route path="new" element={<ContactNew />} />
           <Route path="edit/:contactId" element={<ContactEdit />} />
@@ -46,10 +49,12 @@ const AppRoutes = () => {
       </Route>
       <Route path="/product-create-update-from-csv" element={<ProductCreateUpdateFromCSV />} />
       <Route path="/purchase-create-update-from-csv" element={<PurchaseCreateUpdateFromCSV />} />
+      <Route path="/purchases-by-date-summary" element={<PurchaseByDateSummary />} />
+      <Route path="/purchases-by-date-detail/:purchaseDate" element={<PurchaseByDateDetail />} />
       <Route path="/add-product-to-cart/:id" element={<AddToCart />} />
       <Route path="/shopping-cart" element={<ShoppingCart />} />
       <Route path="/order-summary/:orderId" element={<OrderSummary />} />
-      <Route path="/order-history" element={<OrderHistory/>}/>
+      <Route path="/order-history" element={<OrderHistory />} />
       <Route path="/about" element={<AboutUs />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

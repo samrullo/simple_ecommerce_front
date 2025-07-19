@@ -13,7 +13,10 @@ const Dashboard = () => {
         <Link to="/products" className="list-group-item">Products</Link>
 
         {isStaff && (
-          <Link to="/purchases" className="list-group-item">Purchases</Link>
+          <>
+            <Link to="/purchases-by-date-summary" className="list-group-item">Purchases By Date Summary</Link>
+            <Link to="/purchases" className="list-group-item">Purchases</Link>
+          </>
         )}
         {isAuthenticated && (<Link to="/order-history" className="list-group-item">Order History</Link>)}
         {isStaff && (

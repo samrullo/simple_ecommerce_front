@@ -21,6 +21,8 @@ export const CATEGORIES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/categories/`;
 export const BRANDS_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/brands/`;
 
 export const PURCHASES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/purchases/`;
+export const PURCHASES_BY_DATE_SUMMARY_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/purchases-summary-by-date/`;
+export const PURCHASES_BY_DATE_DETAIL_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/purchases-by-date/`;
 export const PURCHASE_CREATE_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/create-purchase/`;
 export const UPDATE_PURCHASE_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/update-purchase/`;
 export const CREATE_UPDATE_PURCHASES_FROM_CSV_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/create-update-purchases-from-csv/`;

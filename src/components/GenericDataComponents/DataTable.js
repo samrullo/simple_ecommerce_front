@@ -87,11 +87,13 @@ const DataTable = ({
 
     const baseColumnDefs = columns
         ? columns.map((col) => {
+            const {fieldType,...restCol}=col;
+            
               const sampleValue = data?.find((row) => row[col.field] != null)?.[col.field];
-              const fieldType = col.fieldType || null;
+              
 
               return {
-                  ...col,
+                  ...restCol,
                   sortable: true,
                   filter: fieldType !== "image",
                   filterParams: defaultFilterParams,
