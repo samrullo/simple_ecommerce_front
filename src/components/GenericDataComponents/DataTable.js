@@ -16,6 +16,8 @@ const DataTable = ({
     width_pct = 50,
     decimalPlaces = 0,
     timezone = "Asia/Tokyo",
+    enablePagination = true,
+    paginationSize = 20,
 }) => {
     const [rowData, setRowData] = useState(Array.isArray(data) ? data : []);
     const [searchQuery, setSearchQuery] = useState("");
@@ -74,9 +76,9 @@ const DataTable = ({
             return (params) =>
                 params.value != null
                     ? Number(params.value).toLocaleString(undefined, {
-                        minimumFractionDigits: decimalPlaces,
-                        maximumFractionDigits: decimalPlaces,
-                    })
+                          minimumFractionDigits: decimalPlaces,
+                          maximumFractionDigits: decimalPlaces,
+                      })
                     : "";
         }
 
@@ -85,56 +87,58 @@ const DataTable = ({
 
     const baseColumnDefs = columns
         ? columns.map((col) => {
-            const sampleValue = data?.find((row) => row[col.field] != null)?.[col.field];
-            const fieldType = col.fieldType || null;
+              const sampleValue = data?.find((row) => row[col.field] != null)?.[col.field];
+              const fieldType = col.fieldType || null;
 
-            return {
-                ...col,
-                sortable: true,
-                filter: fieldType !== "image",
-                filterParams: defaultFilterParams,
-                ...(fieldType === "image" && {
-                    cellRenderer: imageCellRenderer,
-                    filter: false,
-                }),
-                ...(fieldType === "link" && {
-                    cellRenderer: linkCellRenderer,
-                    filter: false,
-                    sortable: false,
-                }),
-                valueFormatter:
-                    col.valueFormatter ??
-                    (fieldType !== "image" ? getDefaultValueFormatter(col.field, fieldType) : undefined),
-                cellStyle:
-                    fieldType === "numeric" || isNumeric(sampleValue)
-                        ? { textAlign: "right" }
-                        : undefined,
-            };
-        })
+              return {
+                  ...col,
+                  sortable: true,
+                  filter: fieldType !== "image",
+                  filterParams: defaultFilterParams,
+                  ...(fieldType === "image" && {
+                      cellRenderer: imageCellRenderer,
+                      filter: false,
+                  }),
+                  ...(fieldType === "link" && {
+                      cellRenderer: linkCellRenderer,
+                      filter: false,
+                      sortable: false,
+                  }),
+                  valueFormatter:
+                      col.valueFormatter ??
+                      (fieldType !== "image"
+                          ? getDefaultValueFormatter(col.field, fieldType)
+                          : undefined),
+                  cellStyle:
+                      fieldType === "numeric" || isNumeric(sampleValue)
+                          ? { textAlign: "right" }
+                          : undefined,
+              };
+          })
         : Object.keys(data[0] || {}).map((key) => {
-            const sampleValue = data?.find((row) => row[key] != null)?.[key];
-            const isNumericField = isNumeric(sampleValue);
+              const sampleValue = data?.find((row) => row[key] != null)?.[key];
+              const isNumericField = isNumeric(sampleValue);
 
-            return {
-                field: key,
-                headerName: key,
-                sortable: true,
-                filter: true,
-                filterParams: defaultFilterParams,
-                ...(key === "image" && {
-                    cellRenderer: imageCellRenderer,
-                    filter: false,
-                }),
-                valueFormatter:
-                    key !== "image" ? getDefaultValueFormatter(key, null) : undefined,
-                cellStyle: isNumericField ? { textAlign: "right" } : undefined,
-            };
-        });
+              return {
+                  field: key,
+                  headerName: key,
+                  sortable: true,
+                  filter: true,
+                  filterParams: defaultFilterParams,
+                  ...(key === "image" && {
+                      cellRenderer: imageCellRenderer,
+                      filter: false,
+                  }),
+                  valueFormatter:
+                      key !== "image" ? getDefaultValueFormatter(key, null) : undefined,
+                  cellStyle: isNumericField ? { textAlign: "right" } : undefined,
+              };
+          });
 
     const columnDefs = hiddenColumns?.length
         ? baseColumnDefs.map((col) =>
-            hiddenColumns.includes(col.field) ? { ...col, hide: true } : col
-        )
+              hiddenColumns.includes(col.field) ? { ...col, hide: true } : col
+          )
         : baseColumnDefs;
 
     const filterRows = (query) => {
@@ -178,6 +182,8 @@ const DataTable = ({
                     enableClipboard={true}
                     domLayout="autoHeight"
                     tooltipShowDelay={300}
+                    pagination={enablePagination}
+                    paginationPageSize={paginationSize}
                 />
             </div>
         </div>
