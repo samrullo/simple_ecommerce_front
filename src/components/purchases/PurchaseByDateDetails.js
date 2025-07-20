@@ -1,6 +1,5 @@
-// src/components/Purchase/PurchaseByDateDetail.js
 import React, { useEffect, useState, useContext } from "react";
-import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+import { Link, Outlet, useNavigate, useParams,useLocation } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
@@ -9,6 +8,8 @@ import { PURCHASES_BY_DATE_DETAIL_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 const PurchaseByDateDetail = () => {
   const { get } = useApi();
   const navigate = useNavigate();
+  const { state = {} } = useLocation();
+  const { timestamp } = state ?? {};
   const { purchaseDate } = useParams();
   const [purchases, setPurchases] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
@@ -32,14 +33,14 @@ const PurchaseByDateDetail = () => {
       }
     };
     if (isStaff && purchaseDate) fetchPurchases();
-  }, [isStaff, purchaseDate]);
+  }, [isStaff, purchaseDate,timestamp]);
 
   useEffect(() => {
     if (editMode && selectedRowData && isStaff) {
-      navigate(`/purchases/edit/${selectedRowData.id}`);
+      navigate(`/purchases-by-date-detail/${purchaseDate}/edit/${selectedRowData.id}`);
       setSelectedRowData(null);
     }
-  }, [editMode, selectedRowData, isStaff, navigate]);
+  }, [editMode, selectedRowData, isStaff, navigate, purchaseDate]);
 
   if (!isStaff) return <p>You are not authorized to view purchases.</p>;
 
@@ -56,19 +57,27 @@ const PurchaseByDateDetail = () => {
 
   return (
     <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center">
+      <div className="d-flex justify-content-between align-items-center mb-3">
         <h1>Purchases on {purchaseDate}</h1>
-        <div className="form-check form-switch">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="editModeSwitch"
-            checked={editMode}
-            onChange={() => setEditMode(!editMode)}
-          />
-          <label className="form-check-label" htmlFor="editModeSwitch">
-            Edit Mode
-          </label>
+        <div className="d-flex align-items-center">
+          <div className="form-check form-switch me-3">
+            <input
+              type="checkbox"
+              className="form-check-input"
+              id="editModeSwitch"
+              checked={editMode}
+              onChange={() => setEditMode(!editMode)}
+            />
+            <label className="form-check-label" htmlFor="editModeSwitch">
+              Edit Mode
+            </label>
+          </div>
+          <Link
+            className="btn btn-primary"
+            to={`/purchases-by-date-detail/${purchaseDate}/new`}
+          >
+            New Purchase for {purchaseDate}
+          </Link>
         </div>
       </div>
 

@@ -12,6 +12,8 @@ import PurchaseByDateSummary from "./purchases/PurchaseByDateSummary";
 import PurchaseByDateDetail from "./purchases/PurchaseByDateDetails";
 import PurchaseNew from "./purchases/PurchaseNew";
 import PurchaseEdit from "./purchases/PurchaseEdit";
+import PurchaseByDateDetailCreate from "./purchases/PurchaseByDateDetailCreate";
+import PurchaseByDateDetailEdit from "./purchases/PurchaseByDateDetailEdit";
 import AboutUs from "./AboutUs";
 import Login from "./user_management/Login";
 import Register from "./user_management/Register";
@@ -41,7 +43,10 @@ const AppRoutes = () => {
           <Route path="new" element={<PurchaseNew />} />
           <Route path="edit/:purchaseId" element={<PurchaseEdit />} />
         </Route>
-
+        <Route path="/purchases-by-date-detail/:purchaseDate" element={<PurchaseByDateDetail />}>
+          <Route path="new" element={<PurchaseByDateDetailCreate />} />
+          <Route path="edit/:purchaseId" element={<PurchaseByDateDetailEdit />} />
+        </Route>
         <Route path="/contacts" element={<Contact />}>
           <Route path="new" element={<ContactNew />} />
           <Route path="edit/:contactId" element={<ContactEdit />} />
@@ -50,7 +55,6 @@ const AppRoutes = () => {
       <Route path="/product-create-update-from-csv" element={<ProductCreateUpdateFromCSV />} />
       <Route path="/purchase-create-update-from-csv" element={<PurchaseCreateUpdateFromCSV />} />
       <Route path="/purchases-by-date-summary" element={<PurchaseByDateSummary />} />
-      <Route path="/purchases-by-date-detail/:purchaseDate" element={<PurchaseByDateDetail />} />
       <Route path="/add-product-to-cart/:id" element={<AddToCart />} />
       <Route path="/shopping-cart" element={<ShoppingCart />} />
       <Route path="/order-summary/:orderId" element={<OrderSummary />} />
