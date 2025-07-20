@@ -77,7 +77,7 @@ const PurchaseByDateDetailCreate = () => {
         purchase_datetime: `${purchaseDate}T00:00:00`,
       }, true);
       setFlashMessages([{ category: "success", message: "Purchase created successfully." }]);
-      navigate(`/purchases-by-date-detail/${purchaseDate}`);
+      navigate(`/purchases-by-date-detail/${purchaseDate}`,{ state: { timestamp: Date.now() } });
     } catch (err) {
       setFlashMessages([{ category: "danger", message: "Failed to create purchase." }]);
     } finally {
