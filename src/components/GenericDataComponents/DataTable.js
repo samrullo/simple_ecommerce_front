@@ -72,7 +72,7 @@ const DataTable = ({
                     : "";
         }
 
-        if (fieldType === "numeric" || isNumeric(sampleValue)) {
+        if (fieldType!=="text" && (fieldType === "numeric" || isNumeric(sampleValue))) {
             return (params) =>
                 params.value != null
                     ? Number(params.value).toLocaleString(undefined, {

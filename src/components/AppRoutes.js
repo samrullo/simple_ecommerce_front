@@ -15,6 +15,9 @@ import PurchaseNew from "./purchases/PurchaseNew";
 import PurchaseEdit from "./purchases/PurchaseEdit";
 import PurchaseByDateDetailCreate from "./purchases/PurchaseByDateDetailCreate";
 import PurchaseByDateDetailEdit from "./purchases/PurchaseByDateDetailEdit";
+import CustomerByAdmin from "./admin_customer_management/CustomerByAdmin";
+import CustomerByAdminNew from "./admin_customer_management/CustomerByAdminNew";
+import CustomerByAdminEdit from "./admin_customer_management/CustomerByAdminEdit";
 import AboutUs from "./AboutUs";
 import Login from "./user_management/Login";
 import Register from "./user_management/Register";
@@ -35,11 +38,14 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Outlet />}>
         <Route index element={<Dashboard />} />
+
+        {/* Products */}
         <Route path="/products" element={<Product />}>
           <Route path="new" element={<ProductNew />} />
           <Route path="edit/:productId" element={<ProductEdit />} />
         </Route>
 
+        {/* Purchases */}
         <Route path="/purchases" element={<Purchase />}>
           <Route path="new" element={<PurchaseNew />} />
           <Route path="edit/:purchaseId" element={<PurchaseEdit />} />
@@ -48,15 +54,25 @@ const AppRoutes = () => {
           <Route path="new" element={<PurchaseByDateDetailCreate />} />
           <Route path="edit/:purchaseId" element={<PurchaseByDateDetailEdit />} />
         </Route>
+
+        {/* Admin Customer Management */}
+        <Route path="/admin-customers" element={<CustomerByAdmin />}>
+          <Route path="new" element={<CustomerByAdminNew />} />
+          <Route path="edit/:customerId" element={<CustomerByAdminEdit />} />
+        </Route>
+
+        {/* Contacts */}
         <Route path="/contacts" element={<Contact />}>
           <Route path="new" element={<ContactNew />} />
           <Route path="edit/:contactId" element={<ContactEdit />} />
         </Route>
       </Route>
+
+      {/* Standalone Routes */}
       <Route path="/product-create-update-from-csv" element={<ProductCreateUpdateFromCSV />} />
       <Route path="/purchase-create-update-from-csv" element={<PurchaseCreateUpdateFromCSV />} />
       <Route path="/purchases-by-date-summary" element={<PurchaseByDateSummary />} />
-      <Route path="/purchases-by-date-new" element={<PurchaseByDateNew />} /> 
+      <Route path="/purchases-by-date-new" element={<PurchaseByDateNew />} />
       <Route path="/add-product-to-cart/:id" element={<AddToCart />} />
       <Route path="/shopping-cart" element={<ShoppingCart />} />
       <Route path="/order-summary/:orderId" element={<OrderSummary />} />
@@ -67,10 +83,7 @@ const AppRoutes = () => {
       <Route path="/email_unverified" element={<EmailNotVerified />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route
-        path="/reset-password-confirm/:uid/:token"
-        element={<ResetPasswordConfirm />}
-      />
+      <Route path="/reset-password-confirm/:uid/:token" element={<ResetPasswordConfirm />} />
       <Route path="/verify-email/:key" element={<EmailVerification />} />
     </Routes>
   );

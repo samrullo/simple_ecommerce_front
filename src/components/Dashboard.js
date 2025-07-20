@@ -16,12 +16,15 @@ const Dashboard = () => {
           <>
             <Link to="/purchases-by-date-summary" className="list-group-item">Purchases By Date Summary</Link>
             <Link to="/purchases" className="list-group-item">Purchases</Link>
+            <Link to="/admin-customers" className="list-group-item">Customers Managed by Admin</Link>
+            <Link to="/product-create-update-from-csv" className="list-group-item">Products from CSV File</Link>
           </>
         )}
-        {isAuthenticated && (<Link to="/order-history" className="list-group-item">Order History</Link>)}
-        {isStaff && (
-          <Link to="/product-create-update-from-csv" className="list-group-item">Products from csv file</Link>
+
+        {isAuthenticated && (
+          <Link to="/order-history" className="list-group-item">Order History</Link>
         )}
+
         <Link to="/contacts" className="list-group-item">Contacts</Link>
         <Link to="/about" className="list-group-item">About Us</Link>
       </div>

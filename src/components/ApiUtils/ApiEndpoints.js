@@ -28,3 +28,5 @@ export const UPDATE_PURCHASE_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/update-purch
 export const CREATE_UPDATE_PURCHASES_FROM_CSV_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/create-update-purchases-from-csv/`;
 export const CREATE_ORDER_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/create-order/`
 export const ORDERS_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/orders/`
+
+export const CUSTOMERS_BY_ADMIN_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/admin-customers/`;
