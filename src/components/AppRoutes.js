@@ -32,6 +32,9 @@ import AddToCart from "./orders/AddToCart";
 import ShoppingCart from "./orders/ShoppingCart";
 import OrderSummary from "./orders/OrderSummary";
 import OrderHistory from "./orders/OrderHistory";
+import AdminOrderList from "./admin_orders/AdminOrderList";
+import AdminCartForCustomer from "./admin_orders/AdminCartForCustomer";
+import AdminOrderSubmit from "./admin_orders/AdminOrderSubmit";
 
 const AppRoutes = () => {
   return (
@@ -60,6 +63,11 @@ const AppRoutes = () => {
           <Route path="new" element={<CustomerByAdminNew />} />
           <Route path="edit/:customerId" element={<CustomerByAdminEdit />} />
         </Route>
+
+        {/* Admin Orders */}
+        <Route path="/admin-orders" element={<AdminOrderList />} />
+        <Route path="/admin-add-product-to-cart" element={<AdminCartForCustomer />} />
+        <Route path="/admin-order-submit" element={<AdminOrderSubmit />} />
 
         {/* Contacts */}
         <Route path="/contacts" element={<Contact />}>

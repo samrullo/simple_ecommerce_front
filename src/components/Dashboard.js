@@ -18,6 +18,9 @@ const Dashboard = () => {
             <Link to="/purchases" className="list-group-item">Purchases</Link>
             <Link to="/admin-customers" className="list-group-item">Customers Managed by Admin</Link>
             <Link to="/product-create-update-from-csv" className="list-group-item">Products from CSV File</Link>
+            <Link to="/admin-orders" className="list-group-item">All Orders (Admin)</Link>
+            <Link to="/admin-add-product-to-cart" className="list-group-item">Add Product to Cart (Admin)</Link>
+            <Link to="/admin-order-submit" className="list-group-item">Submit Order (Admin)</Link>
           </>
         )}
 

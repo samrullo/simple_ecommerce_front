@@ -13,6 +13,7 @@ const AppContextProvider = ({ children }) => {
   const [emailNotVerified, setEmailNotVerified] = useState(false);
 
   const [baseCurrency, setBaseCurrency] = useState("JPY"); // <-- Default base currency
+  const [adminSelectedCustomer, setAdminSelectedCustomer] = useState(null);
 
   const logoutUser = () => {
     localStorage.removeItem("access_token");
@@ -33,7 +34,9 @@ const AppContextProvider = ({ children }) => {
     setUserInfo,
     logoutUser,
     baseCurrency,
-    setBaseCurrency, // <-- Provide setter
+    setBaseCurrency,
+    adminSelectedCustomer,
+    setAdminSelectedCustomer
   };
 
   return (
