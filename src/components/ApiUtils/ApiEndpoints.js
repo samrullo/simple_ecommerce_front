@@ -1,4 +1,4 @@
-const API_HOSTNAME = window.REACT_APP_API_HOSTNAME || "http://localhost:8000";
+const API_HOSTNAME = process.env.REACT_APP_API_HOSTNAME || "https://simple-ecommerce-djrest.onrender.com";
 
 export const LOGIN_ENDPOINT = `${API_HOSTNAME}/auth/login/`;
 export const LOGOUT_ENDPOINT = `${API_HOSTNAME}/auth/logout/`;
