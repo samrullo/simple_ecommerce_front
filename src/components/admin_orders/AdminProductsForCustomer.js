@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AppContext from "../../AppContext";
 import DataTable from "../GenericDataComponents/DataTable";
 import { useApi } from "../hooks/useApi";
@@ -9,9 +9,8 @@ import {
 } from "../ApiUtils/ApiEndpoints";
 import AdminSelectCustomer from "./AdminSelectCustomer";
 
-const AdminCartForCustomer = () => {
-  const { customerId } = useParams();
-  const { baseCurrency } = useContext(AppContext);
+const AdminProductsForCustomer = () => {
+  const { baseCurrency, adminSelectedCustomer } = useContext(AppContext);
   const { get } = useApi();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
@@ -88,7 +87,7 @@ const AdminCartForCustomer = () => {
       fieldType: "link",
       cellRendererParams: {
         label: "Add to Cart",
-        linkTo: (row) => `/admin-add-to-cart/${customerId}/${row.id}`,
+        linkTo: (row) => `/admin-add-to-cart/${row.id}`,
         className: "btn btn-sm btn-success",
       },
     },
@@ -96,8 +95,13 @@ const AdminCartForCustomer = () => {
 
   return (
     <div className="container mt-4">
-      <h2>Add Products for Customer ID: {customerId}</h2>
-      <AdminSelectCustomer/>
+      <h2>Add Products for Customer</h2>
+      <AdminSelectCustomer />
+      {adminSelectedCustomer && (
+        <div className="mb-3">
+          <strong>Selected:</strong> {adminSelectedCustomer.user?.first_name} {adminSelectedCustomer.user?.last_name} ({adminSelectedCustomer.user?.email})
+        </div>
+      )}
       <DataTable
         data={products}
         columns={columns}
@@ -108,4 +112,4 @@ const AdminCartForCustomer = () => {
   );
 };
 
-export default AdminCartForCustomer;
+export default AdminProductsForCustomer;

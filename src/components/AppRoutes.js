@@ -33,7 +33,9 @@ import ShoppingCart from "./orders/ShoppingCart";
 import OrderSummary from "./orders/OrderSummary";
 import OrderHistory from "./orders/OrderHistory";
 import AdminOrderList from "./admin_orders/AdminOrderList";
-import AdminCartForCustomer from "./admin_orders/AdminCartForCustomer";
+import AdminProductsForCustomer from "./admin_orders/AdminProductsForCustomer";
+import AdminAddToCartForCustomer from "./admin_orders/AdminAddToCartForCustomer";
+import AdminShoppingCart from "./admin_orders/AdminShoppingCart";
 import AdminOrderSubmit from "./admin_orders/AdminOrderSubmit";
 
 const AppRoutes = () => {
@@ -66,7 +68,9 @@ const AppRoutes = () => {
 
         {/* Admin Orders */}
         <Route path="/admin-orders" element={<AdminOrderList />} />
-        <Route path="/admin-add-product-to-cart" element={<AdminCartForCustomer />} />
+        <Route path="/admin-products-for-customer" element={<AdminProductsForCustomer />} />
+        <Route path="/admin-add-to-cart/:productId" element={<AdminAddToCartForCustomer/>}/>
+        <Route path="/admin-shopping-cart" element={<AdminShoppingCart/>}/>
         <Route path="/admin-order-submit" element={<AdminOrderSubmit />} />
 
         {/* Contacts */}
