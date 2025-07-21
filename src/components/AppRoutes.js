@@ -33,6 +33,7 @@ import ShoppingCart from "./orders/ShoppingCart";
 import OrderSummary from "./orders/OrderSummary";
 import OrderHistory from "./orders/OrderHistory";
 import AdminOrderList from "./admin_orders/AdminOrderList";
+import AdminOrderSummary from "./admin_orders/AdminOrderSummary";
 import AdminProductsForCustomer from "./admin_orders/AdminProductsForCustomer";
 import AdminAddToCartForCustomer from "./admin_orders/AdminAddToCartForCustomer";
 import AdminShoppingCart from "./admin_orders/AdminShoppingCart";
@@ -68,6 +69,7 @@ const AppRoutes = () => {
 
         {/* Admin Orders */}
         <Route path="/admin-orders" element={<AdminOrderList />} />
+        <Route path="/admin-order-summary/:orderId" element={<AdminOrderSummary/>}/>
         <Route path="/admin-products-for-customer" element={<AdminProductsForCustomer />} />
         <Route path="/admin-add-to-cart/:productId" element={<AdminAddToCartForCustomer/>}/>
         <Route path="/admin-shopping-cart" element={<AdminShoppingCart/>}/>

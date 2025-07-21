@@ -43,7 +43,7 @@ const AdminOrderList = () => {
       fieldType: "link",
       cellRendererParams: {
         label: "View",
-        linkTo: (row) => `/order-summary/${row.id}`,
+        linkTo: (row) => `/admin-order-summary/${row.id}`,
         className: "btn btn-sm btn-success"
       }
     }

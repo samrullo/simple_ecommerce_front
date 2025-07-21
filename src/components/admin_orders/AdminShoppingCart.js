@@ -107,7 +107,7 @@ const AdminShoppingCart = () => {
       setCartItems([]);
 
       setFlashMessages([{ category: "success", message: "Order created successfully!" }]);
-      navigate(`/order-summary/${orderId}`);
+      navigate(`/admin-order-summary/${orderId}`);
     } catch (error) {
       console.error("Failed to create order:", error);
       setFlashMessages([{ category: "danger", message: "Failed to create order. Try again." }]);
