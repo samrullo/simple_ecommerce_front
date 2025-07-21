@@ -61,13 +61,17 @@ const DataTable = ({
             </Link>
         );
     };
+    
+    //check if passed datetime is a valida datetime
+    const isValidDate = (value) =>
+        typeof value === "string" && moment(value, moment.ISO_8601, true).isValid();
 
     const getDefaultValueFormatter = (fieldName, fieldType) => {
         const sampleValue = data?.find((row) => row[fieldName] != null)?.[fieldName];
 
         if (fieldType === "datetime") {
             return (params) =>
-                params.value
+                params.value && isValidDate(params.value)
                     ? moment.utc(params.value).tz(timezone).format("YYYY-MM-DD HH:mm:ss")
                     : "";
         }
