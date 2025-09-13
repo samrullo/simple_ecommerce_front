@@ -16,6 +16,7 @@ const Product = () => {
   const [editMode, setEditMode] = useState(false);
   const [fxRates, setFxRates] = useState([]);
   const [detailedView, setDetailedView] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchFxRates = async () => {
@@ -41,8 +42,8 @@ const Product = () => {
   useEffect(() => {
     const getProducts = async () => {
       try {
+        setLoading(true); // start loading
         const data = await get(PRODUCTS_WITH_IMAGES_ENDPOINT, false);
-        const imageBaseUrl = process.env.REACT_APP_IMAGE_BASE_URL || "http://localhost:8000";
 
         setProducts(
           data.map((product) => {
@@ -66,12 +67,14 @@ const Product = () => {
               inventory: activeInventory || "",
               image: image,
               add_to_cart: "",
-              product_id:product.id
+              product_id: product.id
             };
           })
         );
       } catch (error) {
         console.log(`Error while fetching products: ${error}`);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -119,7 +122,7 @@ const Product = () => {
     { field: "created_at", headerName: "Created At", fieldType: "datetime" },
     { field: "updated_at", headerName: "Updated At", fieldType: "datetime" },
     { field: "is_active", headerName: "Active", fieldType: "datetime" },
-    {field:"product_id", headerName:"Product Id", fieldType:"text"}
+    { field: "product_id", headerName: "Product Id", fieldType: "text" }
   ];
 
   const columns = detailedView ? [...baseColumns, ...extraColumns] : baseColumns;
@@ -166,7 +169,13 @@ const Product = () => {
 
       <Outlet />
 
-      {products.length === 0 ? (
+      {loading ? (
+        <div className="text-center mt-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      ) : products.length === 0 ? (
         <p>No products available</p>
       ) : (
         <DataTable
