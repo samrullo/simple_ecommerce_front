@@ -49,7 +49,7 @@ const Product = () => {
             const activePrice = product.price?.find((p) => p.end_date === null);
             const activeInventory = product.inventory?.reduce((total, inv) => total + inv.stock, 0) || 0;
             const imagePath = product.icon_images?.[0]?.image;
-            const image = imagePath ? `${imageBaseUrl}${imagePath}` : null;
+            const image = imagePath ? `${imagePath}` : null;
 
             const base = baseCurrency;
             const converted = convertPrice(activePrice.price, activePrice.currency.code, base);

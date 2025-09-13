@@ -30,7 +30,7 @@ const AdminOrderSubmit = () => {
       setFxRates(simplified);
     };
     fetchFxRates();
-  }, [get]);
+  }, []);
 
   const convertPrice = (price, from, to) => {
     if (from === to) return price;
