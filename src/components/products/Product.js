@@ -51,19 +51,15 @@ const Product = () => {
             const activeInventory = product.inventory?.reduce((total, inv) => total + inv.stock, 0) || 0;
             const imagePath = product.icon_images?.[0]?.image;
             const image = imagePath ? `${imagePath}` : null;
-
-            const base = baseCurrency;
-            const converted = convertPrice(activePrice.price, activePrice.currency.code, base);
-
             return {
               ...product,
               category: product.category?.name || "",
               brand: product.brand?.name || "",
               tags: product.tags?.map((tag) => tag.name).join(", ") || "",
               price: activePrice?.price || "",
+              price_in_base_currency: "",
               currency: activePrice?.currency?.code || "",
-              price_in_base_currency: converted,
-              base_currency: base,
+              base_currency: baseCurrency,
               inventory: activeInventory || "",
               image: image,
               add_to_cart: "",
@@ -79,7 +75,20 @@ const Product = () => {
     };
 
     getProducts();
-  }, [timestamp, baseCurrency, fxRates]);
+  }, [timestamp]);
+
+
+  //when fxRates or baseCurrency change, recalc converted prices
+  useEffect(() => {
+    if (products.length === 0 || fxRates.length === 0) return;
+
+    setProducts(prev =>
+      prev.map(product => {
+        const converted = convertPrice(product.price, product.currency, baseCurrency);
+        return { ...product, price_in_base_currency: converted, base_currency: baseCurrency };
+      })
+    );
+  }, [baseCurrency, fxRates]); // ❌ remove products from deps
 
   useEffect(() => {
     if (editMode && selectedRowData && isStaff) {
