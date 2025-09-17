@@ -1,11 +1,12 @@
 // src/components/Purchase/PurchaseByDateNew.js
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import GenericNewData from "../GenericDataComponents/GenericNewData";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
 import {
-  PRODUCTS_ENDPOINT,
+  MINIMAL_PRODUCTS_ENDPOINT,
+  LAST_PURCHASE_PRICES_ENDPOINT,
   PURCHASE_CREATE_ENDPOINT,
   CURRENCIES_ENDPOINT,
 } from "../ApiUtils/ApiEndpoints";
@@ -17,48 +18,90 @@ const PurchaseByDateNew = () => {
 
   const [purchaseDate, setPurchaseDate] = useState("");
   const [products, setProducts] = useState([]);
+  const [lastPurchasePrices, setLastPurchasePrices] = useState([]);
+  const [currencies, setCurrencies] = useState([]);
+
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [pricePerUnit, setPricePerUnit] = useState("");
-  const [currencies, setCurrencies] = useState([]);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Fetch currencies
   useEffect(() => {
     const fetchCurrencies = async () => {
       try {
-        const fetched_currencies = await get(CURRENCIES_ENDPOINT);
-        const currency_options = fetched_currencies.map((fetched_currency) => ({
-          value: fetched_currency.code,
-          label: fetched_currency.name,
-        }));
-        setCurrencies(currency_options);
+        const fetched = await get(CURRENCIES_ENDPOINT);
+        setCurrencies(
+          fetched.map((c) => ({ value: c.code, label: c.name }))
+        );
       } catch (err) {
-        console.log(`Error when fetching currencies : ${err}`);
+        console.error("Error fetching currencies", err);
         setCurrencies([]);
       }
     };
     fetchCurrencies();
   }, []);
 
+  // Fetch minimal products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = await get(PRODUCTS_ENDPOINT, false);
-        const options = data.map((product) => ({
-          value: product.id,
-          label: product.name,
-        }));
-        setProducts(options);
-      } catch (error) {
-        console.error("Failed to fetch products", error);
+        const data = await get(MINIMAL_PRODUCTS_ENDPOINT, false);
+        setProducts(data);
+      } catch (err) {
+        console.error("Error fetching products", err);
         setProducts([]);
       }
     };
     fetchProducts();
   }, []);
 
-  if (!userInfo?.is_staff) return <p>You are not authorized to create purchases.</p>;
+  // Fetch last purchase prices
+  useEffect(() => {
+    const fetchLastPrices = async () => {
+      try {
+        const data = await get(LAST_PURCHASE_PRICES_ENDPOINT, false);
+        setLastPurchasePrices(data);
+      } catch (err) {
+        console.error("Error fetching last purchase prices", err);
+        setLastPurchasePrices([]);
+      }
+    };
+    fetchLastPrices();
+  }, []);
+
+  // Merge products with last purchase price
+  const enrichedProducts = useMemo(() => {
+    return products.map((p) => {
+      const lastPrice = lastPurchasePrices.find((lp) => lp.product === p.id);
+      return {
+        value: p.id,
+        label: p.name,
+        last_price: lastPrice?.last_price || "",
+        last_currency: lastPrice?.currency || null,
+      };
+    });
+  }, [products, lastPurchasePrices]);
+
+  // When product changes, populate price and currency
+  useEffect(() => {
+    if (!selectedProduct) return;
+    const match = enrichedProducts.find((p) => p.value === selectedProduct.value);
+    if (match) {
+      if (match.last_price) setPricePerUnit(match.last_price);
+      if (match.last_currency) {
+        setSelectedCurrency({
+          value: match.last_currency.code,
+          label: match.last_currency.name,
+        });
+      }
+    }
+  }, [selectedProduct, enrichedProducts]);
+
+  if (!userInfo?.is_staff) {
+    return <p>You are not authorized to create purchases.</p>;
+  }
 
   const formFields = [
     {
@@ -72,7 +115,7 @@ const PurchaseByDateNew = () => {
       fieldLabel: "Product",
       fieldValue: selectedProduct,
       setFieldValue: setSelectedProduct,
-      selectOptions: products,
+      selectOptions: enrichedProducts,
     },
     {
       fieldType: "number",
