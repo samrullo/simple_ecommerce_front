@@ -1,11 +1,14 @@
-import React, { useEffect, useState, useContext } from "react";
+// src/components/admin_orders/AdminProductsForCustomer.js
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import AppContext from "../../AppContext";
 import DataTable from "../GenericDataComponents/DataTable";
 import { useApi } from "../hooks/useApi";
 import {
-  PRODUCTS_WITH_IMAGES_ENDPOINT,
-  FXRATES_ENDPOINT,
+  PRODUCTS_WITH_ICON_IMAGE_ENDPOINT,
+  ACTIVE_PRODUCT_PRICES_ENDPOINT,
+  PRODUCT_TOTAL_INVENTORIES_ENDPOINT,
+  FXRATES_ENDPOINT
 } from "../ApiUtils/ApiEndpoints";
 import AdminSelectCustomer from "./AdminSelectCustomer";
 
@@ -13,67 +16,98 @@ const AdminProductsForCustomer = () => {
   const { baseCurrency, adminSelectedCustomer } = useContext(AppContext);
   const { get } = useApi();
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const [fxRates, setFxRates] = useState([]);
 
+  const [products, setProducts] = useState([]);
+  const [productPrices, setProductPrices] = useState([]);
+  const [productInventories, setProductInventories] = useState([]);
+  const [fxRates, setFxRates] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch core products
   useEffect(() => {
-    const fetchFxRates = async () => {
-      const data = await get(FXRATES_ENDPOINT, false);
-      const simplified = data.map((rate) => ({
-        currency_from: rate.currency_from.code,
-        currency_to: rate.currency_to.code,
-        rate: parseFloat(rate.rate),
-      }));
-      setFxRates(simplified);
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const data = await get(PRODUCTS_WITH_ICON_IMAGE_ENDPOINT, false);
+        setProducts(
+          data.map(product => ({
+            ...product,
+            category: product.category?.name || "",
+            brand: product.brand?.name || "",
+            tags: product.tags?.map(tag => tag.name).join(", ") || "",
+            image: product.icon_image?.image || null,
+            price: "",
+            currency: "",
+            price_in_base_currency: "",
+            inventory: "",
+            base_currency: baseCurrency,
+            add_to_cart: "",
+            product_id: product.id
+          }))
+        );
+      } catch (err) {
+        console.error("Failed to fetch products", err);
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchFxRates();
+    fetchProducts();
   }, []);
 
+  // Fetch supporting data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [prices, inventories, rates] = await Promise.all([
+          get(ACTIVE_PRODUCT_PRICES_ENDPOINT, false),
+          get(PRODUCT_TOTAL_INVENTORIES_ENDPOINT, false),
+          get(FXRATES_ENDPOINT, false)
+        ]);
+
+        setProductPrices(prices);
+        setProductInventories(inventories);
+        setFxRates(
+          rates.map(rate => ({
+            currency_from: rate.currency_from.code,
+            currency_to: rate.currency_to.code,
+            rate: parseFloat(rate.rate)
+          }))
+        );
+      } catch (err) {
+        console.error("Failed to fetch supporting data", err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Helper to convert prices
   const convertPrice = (price, from, to) => {
+    if (!price) return "";
     if (from === to) return price;
     const fx = fxRates.find(
-      (r) => r.currency_from === from && r.currency_to === to
+      r => r.currency_from === from && r.currency_to === to
     );
     return fx ? price * fx.rate : price;
   };
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await get(PRODUCTS_WITH_IMAGES_ENDPOINT, false);
-        const imageBaseUrl =
-          process.env.REACT_APP_IMAGE_BASE_URL || "http://localhost:8000";
+  // Enrich products with prices + inventories
+  const enrichedProducts = useMemo(() => {
+    return products.map(prod => {
+      const priceObj = productPrices.find(p => p.product === prod.id);
+      const inv = productInventories.find(i => i.product === prod.id);
 
-        const formatted = data.map((product) => {
-          const activePrice = product.price?.find((p) => p.end_date === null);
-          const iconImage = product.icon_images?.[0]?.image;
-          const image = iconImage ? `${imageBaseUrl}${iconImage}` : null;
-          const inventory = product.inventory?.reduce((sum, inv) => sum + inv.stock, 0);
-          const converted = convertPrice(
-            activePrice.price,
-            activePrice.currency.code,
-            baseCurrency
-          );
-
-          return {
-            ...product,
-            name: product.name,
-            price: activePrice.price,
-            currency: activePrice.currency.code,
-            price_in_base: converted,
-            inventory,
-            image,
-            add_to_cart: "",
-          };
-        });
-
-        setProducts(formatted);
-      } catch (err) {
-        console.error("Failed to fetch products", err);
-      }
-    };
-    fetchProducts();
-  }, [baseCurrency, fxRates]);
+      return {
+        ...prod,
+        price: priceObj?.price || "",
+        currency: priceObj?.currency?.code || "",
+        price_in_base_currency: priceObj
+          ? convertPrice(priceObj.price, priceObj.currency?.code, baseCurrency)
+          : "",
+        base_currency: baseCurrency,
+        inventory: inv?.total_inventory ?? 0
+      };
+    });
+  }, [products, productPrices, productInventories, fxRates, baseCurrency]);
 
   const columns = [
     { field: "image", headerName: "Image", fieldType: "image" },
@@ -87,10 +121,10 @@ const AdminProductsForCustomer = () => {
       fieldType: "link",
       cellRendererParams: {
         label: "Add to Cart",
-        linkTo: (row) => `/admin-add-to-cart/${row.id}`,
-        className: "btn btn-sm btn-success",
-      },
-    },
+        linkTo: row => `/admin-add-to-cart/${row.id}`,
+        className: "btn btn-sm btn-success"
+      }
+    }
   ];
 
   return (
@@ -99,15 +133,25 @@ const AdminProductsForCustomer = () => {
       <AdminSelectCustomer />
       {adminSelectedCustomer && (
         <div className="mb-3">
-          <strong>Selected:</strong> {adminSelectedCustomer.user?.first_name} {adminSelectedCustomer.user?.last_name} ({adminSelectedCustomer.user?.email})
+          <strong>Selected:</strong>{" "}
+          {adminSelectedCustomer.user?.first_name}{" "}
+          {adminSelectedCustomer.user?.last_name} (
+          {adminSelectedCustomer.user?.email})
         </div>
       )}
-      <DataTable
-        data={products}
-        columns={columns}
-        hiddenColumns={["id"]}
-        width_pct={100}
-      />
+
+      {loading ? (
+        <div className="text-center mt-5">
+          <div className="spinner-border text-primary" />
+        </div>
+      ) : (
+        <DataTable
+          data={enrichedProducts}
+          columns={columns}
+          hiddenColumns={["id"]}
+          width_pct={100}
+        />
+      )}
     </div>
   );
 };

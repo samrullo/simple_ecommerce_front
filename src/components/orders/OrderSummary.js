@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
 import moment from "moment-timezone";
 import { useApi } from "../hooks/useApi";
 import { ORDERS_ENDPOINT } from "../ApiUtils/ApiEndpoints";
@@ -9,7 +9,6 @@ const OrderSummary = () => {
   const { get } = useApi();
   const [order, setOrder] = useState(null);
 
-  const imageBaseUrl = process.env.REACT_APP_IMAGE_BASE_URL || "http://localhost:8000";
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -22,7 +21,7 @@ const OrderSummary = () => {
     };
 
     fetchOrder();
-  }, [orderId, get]);
+  }, [orderId]);
 
   if (!order) return <p>Loading order...</p>;
 
@@ -62,9 +61,7 @@ const OrderSummary = () => {
         </thead>
         <tbody>
           {order.items.map((item) => {
-            const imageUrl = item.product_image
-              ? `${imageBaseUrl}${item.product_image}`
-              : null;
+            const imageUrl = item.product_image ? item.product_image : null;
             const price = parseFloat(item.price);
             const subtotal = price * item.quantity;
             const currencyCode = item.currency?.code || "";
@@ -90,6 +87,11 @@ const OrderSummary = () => {
           })}
         </tbody>
       </table>
+      <div className="mt-4 d-flex align-items-center gap-3">
+        <Link to="/order-history" className="btn btn-secondary mt-4">
+          Back to Order history
+        </Link>
+      </div>
     </div>
   );
 };

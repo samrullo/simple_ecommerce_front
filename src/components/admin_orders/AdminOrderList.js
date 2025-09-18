@@ -33,7 +33,7 @@ const AdminOrderList = () => {
     { field: "id", headerName: "Order ID" },
     { field: "customer_name", headerName: "Customer Name" },
     { field: "customer_email", headerName: "Email" },
-    { field: "customer_phone", headerName: "Phone" },
+    { field: "customer_phone", headerName: "Phone", fieldType:"text" },
     { field: "total_amount", headerName: "Total", fieldType: "numeric" },
     { field: "currency_code", headerName: "Currency" },
     { field: "created_at", headerName: "Created At", fieldType: "datetime" },

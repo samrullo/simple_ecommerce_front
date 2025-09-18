@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
 import { FXRATES_ENDPOINT,CREATE_ORDER_ENDPOINT } from "../ApiUtils/ApiEndpoints";
@@ -187,6 +187,7 @@ const ShoppingCart = () => {
         >
           {submitting ? "Processing..." : "Buy"}
         </button>
+        <Link to="/products" className="btn btn-secondary">Continue shopping</Link>
       </div>
     </div>
   );

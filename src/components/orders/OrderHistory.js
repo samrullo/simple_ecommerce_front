@@ -25,7 +25,7 @@ const OrderHistory = () => {
         };
 
         fetchOrders();
-    }, [get]);
+    }, []);
 
     const columns = [
         { field: "id", headerName: "Order ID" },
