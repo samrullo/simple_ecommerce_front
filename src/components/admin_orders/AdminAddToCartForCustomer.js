@@ -26,7 +26,7 @@ const AdminAddToCartForCustomer = () => {
       }
     };
     fetchProduct();
-  }, [productId, get]);
+  }, [productId]);
 
   const handleAddToCart = () => {
     if (!customerId) {
