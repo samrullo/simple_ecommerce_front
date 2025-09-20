@@ -79,7 +79,7 @@ const Product = () => {
       );
     };
     fetchData();
-  }, []);
+  }, [timestamp]);
 
   // Helper to convert price
   const convertPrice = (price, from, to) => {
