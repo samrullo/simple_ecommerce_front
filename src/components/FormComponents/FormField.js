@@ -6,13 +6,13 @@ const FormField = ({
   fieldValue,
   setFieldValue,
   selectOptions,
+  fieldProps = {}, // 👈 default to empty object
 }) => {
   const handleSelectOnChange = (selectedOption) => {
     setFieldValue(selectedOption);
   };
 
   if (fieldType === "select") {
-    console.log(`we have received ${selectOptions.length} select options`);
     return (
       <div className="form-group">
         <label>{fieldLabel}</label>
@@ -23,6 +23,7 @@ const FormField = ({
           onChange={handleSelectOnChange}
           isSearchable
           className="form-control"
+          {...fieldProps} // 👈 spread props here
         />
       </div>
     );
@@ -34,6 +35,7 @@ const FormField = ({
             type="checkbox"
             checked={fieldValue}
             onChange={(e) => setFieldValue(e.target.checked)}
+            {...fieldProps} // 👈 apply here
           />{" "}
           {fieldLabel}
         </label>
@@ -47,6 +49,7 @@ const FormField = ({
           type="file"
           className="form-control"
           onChange={(e) => setFieldValue(e.target.files[0])}
+          {...fieldProps} // 👈 apply here
         />
       </div>
     );
@@ -59,6 +62,7 @@ const FormField = ({
           className="form-control"
           value={fieldValue}
           onChange={(e) => setFieldValue(e.target.value)}
+          {...fieldProps} // 👈 apply here
         />
       </div>
     );

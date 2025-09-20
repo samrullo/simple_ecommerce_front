@@ -39,6 +39,11 @@ import AdminAddToCartForCustomer from "./admin_orders/AdminAddToCartForCustomer"
 import AdminShoppingCart from "./admin_orders/AdminShoppingCart";
 import AdminOrderSubmit from "./admin_orders/AdminOrderSubmit";
 
+// FX Rate Components
+import FXRate from "./fxrates/FXRate";
+import FXRateEdit from "./fxrates/FXRateEdit";
+// (later: import FXRateNew from "./fx/FXRateNew";)
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -51,12 +56,21 @@ const AppRoutes = () => {
           <Route path="edit/:productId" element={<ProductEdit />} />
         </Route>
 
+        {/* FX Rates */}
+        <Route path="/fxrates" element={<FXRate />}>
+          <Route path="edit/:fxRateId" element={<FXRateEdit />} />
+          {/* <Route path="new" element={<FXRateNew />} /> */}
+        </Route>
+
         {/* Purchases */}
         <Route path="/purchases" element={<Purchase />}>
           <Route path="new" element={<PurchaseNew />} />
           <Route path="edit/:purchaseId" element={<PurchaseEdit />} />
         </Route>
-        <Route path="/purchases-by-date-detail/:purchaseDate" element={<PurchaseByDateDetail />}>
+        <Route
+          path="/purchases-by-date-detail/:purchaseDate"
+          element={<PurchaseByDateDetail />}
+        >
           <Route path="new" element={<PurchaseByDateDetailCreate />} />
           <Route path="edit/:purchaseId" element={<PurchaseByDateDetailEdit />} />
         </Route>
@@ -69,10 +83,10 @@ const AppRoutes = () => {
 
         {/* Admin Orders */}
         <Route path="/admin-orders" element={<AdminOrderList />} />
-        <Route path="/admin-order-summary/:orderId" element={<AdminOrderSummary/>}/>
+        <Route path="/admin-order-summary/:orderId" element={<AdminOrderSummary />} />
         <Route path="/admin-products-for-customer" element={<AdminProductsForCustomer />} />
-        <Route path="/admin-add-to-cart/:productId" element={<AdminAddToCartForCustomer/>}/>
-        <Route path="/admin-shopping-cart" element={<AdminShoppingCart/>}/>
+        <Route path="/admin-add-to-cart/:productId" element={<AdminAddToCartForCustomer />} />
+        <Route path="/admin-shopping-cart" element={<AdminShoppingCart />} />
         <Route path="/admin-order-submit" element={<AdminOrderSubmit />} />
 
         {/* Contacts */}

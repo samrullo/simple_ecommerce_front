@@ -12,6 +12,7 @@ export const REFRESH_TOKEN_ENDPOINT = `${API_HOSTNAME}/auth/token/refresh/`
 
 export const CURRENCIES_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/currencies/`;
 export const FXRATES_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/fxrates/`;
+export const CREATE_UPDATE_FXRATES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/create-or-update-fxrates/`;
 export const PRODUCTS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/products/`;
 export const PRODUCTS_WITH_IMAGES_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/products-with-images/`;
 export const PRODUCTS_WITH_ICON_IMAGE_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/products-with-icon-image/`;
