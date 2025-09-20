@@ -26,7 +26,7 @@ const AddToCart = () => {
             }
         };
         fetchProduct();
-    }, [id, get]);
+    }, [id]);
 
     const handleAddToCart = () => {
         const cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];

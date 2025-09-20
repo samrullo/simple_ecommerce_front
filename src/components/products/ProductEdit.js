@@ -98,7 +98,7 @@ const ProductEdit = () => {
 
       loadProduct();
     }
-  }, [hasLoaded, get, productId, setFlashMessages]);
+  }, [hasLoaded, productId, setFlashMessages]);
 
   if (!userInfo?.is_staff && !userInfo?.is_superuser) {
     return <p>You are not authorized to edit products.</p>;
