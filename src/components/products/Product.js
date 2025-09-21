@@ -7,8 +7,8 @@ import { useApi } from "../hooks/useApi";
 import {
   PRODUCTS_WITH_ICON_IMAGE_ENDPOINT,
   ACTIVE_PRODUCT_PRICES_ENDPOINT,
-  PRODUCT_TOTAL_INVENTORIES_ENDPOINT,
-  FXRATES_ENDPOINT
+  PRODUCT_TOTAL_INVENTORIES_ENDPOINT,  
+  ACTIVE_FXRATES_ENDPOINT
 } from "../ApiUtils/ApiEndpoints";
 
 const Product = () => {
@@ -65,7 +65,7 @@ const Product = () => {
       const [prices, inventories, rates] = await Promise.all([
         get(ACTIVE_PRODUCT_PRICES_ENDPOINT, false),
         get(PRODUCT_TOTAL_INVENTORIES_ENDPOINT, false),
-        get(FXRATES_ENDPOINT, false)
+        get(ACTIVE_FXRATES_ENDPOINT, false)
       ]);
 
       setProductPrices(prices);
