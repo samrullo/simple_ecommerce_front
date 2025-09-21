@@ -1,10 +1,10 @@
 // src/components/FXRates/FXRate.js
 import React, { useEffect, useState, useContext } from "react";
-import { Link, useNavigate,useLocation, Outlet } from "react-router-dom";
+import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
-import { FXRATES_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import { FXRATES_ENDPOINT, FXRATES_AGAINST_PRIMARY_CURRENCY_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 
 const FXRate = () => {
     const { userInfo } = useContext(AppContext);
@@ -22,19 +22,17 @@ const FXRate = () => {
         const fetchFxRates = async () => {
             setLoading(true);
             try {
-                const data = await get(FXRATES_ENDPOINT, false);
-                const filtered = data
-                    .filter(rate => rate.currency_from.code === "USD" && rate.end_date == null)
-                    .map(rate => ({
-                        id: rate.id,
-                        currency_from: rate.currency_from.code,
-                        currency_to: rate.currency_to.code,
-                        rate: parseFloat(rate.rate),
-                        start_date: rate.start_date,
-                        end_date: rate.end_date || "",
-                        source: rate.source,
-                        is_active: rate.is_active
-                    }));
+                const data = await get(FXRATES_AGAINST_PRIMARY_CURRENCY_ENDPOINT, false);
+                const filtered = data.map(rate => ({
+                    id: rate.id,
+                    currency_from: rate.currency_from.code,
+                    currency_to: rate.currency_to.code,
+                    rate: parseFloat(rate.rate),
+                    start_date: rate.start_date,
+                    end_date: rate.end_date || "",
+                    source: rate.source,
+                    is_active: rate.is_active
+                }));
                 setFxRates(filtered);
             } catch (err) {
                 console.error("Failed to fetch FX rates", err);
@@ -74,21 +72,27 @@ const FXRate = () => {
         <div className="container mt-4">
             <div className="d-flex justify-content-between align-items-center">
                 <h1>FX Rates (USD Base)</h1>
-                {userInfo?.is_staff && (
-                    <div className="form-check form-switch">
-                        <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id="editModeSwitch"
-                            checked={editMode}
-                            onChange={() => setEditMode(!editMode)}
-                        />
-                        <label className="form-check-label" htmlFor="editModeSwitch">
-                            Edit Mode
-                        </label>
-                    </div>
-                )}
             </div>
+            {userInfo?.is_staff && (<>
+                <div className="mb-3">
+                    <Link className="btn btn-primary me-2" to="/fxrates/new">New FX Rate</Link>
+                </div>
+
+                <div className="form-check form-switch">
+                    <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id="editModeSwitch"
+                        checked={editMode}
+                        onChange={() => setEditMode(!editMode)}
+                    />
+                    <label className="form-check-label" htmlFor="editModeSwitch">
+                        Edit Mode
+                    </label>
+                </div>
+            </>
+            )}
+
             <Outlet />
             {loading ? (
                 <div className="text-center mt-5">

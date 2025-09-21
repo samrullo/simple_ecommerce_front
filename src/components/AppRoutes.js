@@ -42,6 +42,7 @@ import AdminOrderSubmit from "./admin_orders/AdminOrderSubmit";
 // FX Rate Components
 import FXRate from "./fxrates/FXRate";
 import FXRateEdit from "./fxrates/FXRateEdit";
+import FXRateNew from "./fxrates/FXRateNew";
 // (later: import FXRateNew from "./fx/FXRateNew";)
 
 const AppRoutes = () => {
@@ -58,6 +59,7 @@ const AppRoutes = () => {
 
         {/* FX Rates */}
         <Route path="/fxrates" element={<FXRate />}>
+          <Route path="new" element={<FXRateNew />} />
           <Route path="edit/:fxRateId" element={<FXRateEdit />} />
           {/* <Route path="new" element={<FXRateNew />} /> */}
         </Route>

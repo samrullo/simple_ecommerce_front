@@ -34,7 +34,7 @@ const FXRateEdit = () => {
                     setCurrencyFromId(data.currency_from?.id)
                     setCurrencyToId(data.currency_to?.id)
                     setFxRate(data.rate)
-                    setFxRateSource(data.source)
+                    setFxRateSource(data?.source||"")
                     setStartDate(data.start_date)
                     setHasLoaded(true)
 

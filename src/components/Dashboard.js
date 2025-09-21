@@ -35,6 +35,9 @@ const Dashboard = () => {
             <Link to="/admin-orders" className="list-group-item">Orders Across Customers</Link>
             <Link to="/admin-products-for-customer" className="list-group-item">Products for Customer</Link>
             <Link to="/admin-order-submit" className="list-group-item">Submit Order (Admin)</Link>
+
+            <h5 className="mt-4">Other Admin Operations</h5>
+            <Link to="/fxrates" className="list-group-item">FX Rates Admin</Link>
           </>
         )}
       </div>
