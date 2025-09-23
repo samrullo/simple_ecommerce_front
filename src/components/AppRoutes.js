@@ -9,7 +9,6 @@ import ContactNew from "./contacts/ContactNew";
 import ContactEdit from "./contacts/ContactEdit";
 import Purchase from "./purchases/Purchase";
 import PurchaseByDateSummary from "./purchases/PurchaseByDateSummary";
-import PurchaseByDateNew from "./purchases/PurchaseByDateNew";
 import PurchaseByDateDetail from "./purchases/PurchaseByDateDetails";
 import PurchaseNew from "./purchases/PurchaseNew";
 import PurchaseEdit from "./purchases/PurchaseEdit";
@@ -102,7 +101,6 @@ const AppRoutes = () => {
       <Route path="/product-create-update-from-csv" element={<ProductCreateUpdateFromCSV />} />
       <Route path="/purchase-create-update-from-csv" element={<PurchaseCreateUpdateFromCSV />} />
       <Route path="/purchases-by-date-summary" element={<PurchaseByDateSummary />} />
-      <Route path="/purchases-by-date-new" element={<PurchaseByDateNew />} />
       <Route path="/add-product-to-cart/:id" element={<AddToCart />} />
       <Route path="/shopping-cart" element={<ShoppingCart />} />
       <Route path="/order-summary/:orderId" element={<OrderSummary />} />
