@@ -1,5 +1,5 @@
 // Product.js
-import React, { useEffect, useState, useContext,useMemo } from "react";
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
 import AppContext from "../../AppContext";
@@ -7,7 +7,7 @@ import { useApi } from "../hooks/useApi";
 import {
   PRODUCTS_WITH_ICON_IMAGE_ENDPOINT,
   ACTIVE_PRODUCT_PRICES_ENDPOINT,
-  PRODUCT_TOTAL_INVENTORIES_ENDPOINT,  
+  PRODUCT_TOTAL_INVENTORIES_ENDPOINT,
   ACTIVE_FXRATES_ENDPOINT
 } from "../ApiUtils/ApiEndpoints";
 
@@ -135,6 +135,16 @@ const Product = () => {
         label: "Add To Cart",
         linkTo: row => `/add-product-to-cart/${row.id}`,
         className: "btn btn-sm btn-success"
+      }
+    },
+    {
+      field: "view_detail",
+      headerName: "",
+      fieldType: "link",
+      cellRendererParams: {
+        label: "View Details",
+        linkTo: row => `/products/detail/${row.id}`,
+        className: "btn btn-sm btn-info"
       }
     }
   ];

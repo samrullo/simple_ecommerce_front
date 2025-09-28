@@ -4,6 +4,7 @@ import Dashboard from "./Dashboard";
 import Product from "./products/Product";
 import ProductNew from "./products/ProductNew";
 import ProductEdit from "./products/ProductEdit";
+import ProductDetail from "./products/ProductDetail";
 import Contact from "./contacts/Contact";
 import ContactNew from "./contacts/ContactNew";
 import ContactEdit from "./contacts/ContactEdit";
@@ -55,6 +56,7 @@ const AppRoutes = () => {
           <Route path="new" element={<ProductNew />} />
           <Route path="edit/:productId" element={<ProductEdit />} />
         </Route>
+        <Route path="/products/detail/:productId" element={<ProductDetail />} />
 
         {/* FX Rates */}
         <Route path="/fxrates" element={<FXRate />}>

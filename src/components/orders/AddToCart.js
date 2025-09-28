@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useApi } from "../hooks/useApi";
 import { PRODUCTS_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import { handleAddToCart } from "./order_utils";
 
 const AddToCart = () => {
     const { id } = useParams();
@@ -28,27 +29,6 @@ const AddToCart = () => {
         fetchProduct();
     }, [id]);
 
-    const handleAddToCart = () => {
-        const cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
-
-        const existingItemIndex = cart.findIndex((item) => item.id === product.id);
-        if (existingItemIndex > -1) {
-            cart[existingItemIndex].quantity += Number(quantity);
-        } else {
-            cart.push({
-                id: product.id,
-                name: product.name,
-                description: product.description,
-                price: product.price?.[0]?.price,
-                currency: product.price?.[0]?.currency?.code,
-                image: product.image,
-                quantity: Number(quantity),
-            });
-        }
-
-        localStorage.setItem("shopping_cart", JSON.stringify(cart));
-        navigate("/shopping-cart");  // Optional: redirect after adding
-    };
 
     if (!product) return <p>Loading...</p>;
 
@@ -94,7 +74,7 @@ const AddToCart = () => {
                     />
                 </div>
 
-                <button onClick={handleAddToCart} className="btn btn-primary mt-3">
+                <button onClick={()=>{handleAddToCart(product,quantity,navigate)}} className="btn btn-primary mt-3">
                     Add
                 </button>
             </div>
