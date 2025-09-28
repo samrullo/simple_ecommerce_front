@@ -16,7 +16,7 @@ const Dashboard = () => {
         <Link to="/products" className="list-group-item">Products</Link>
         {isAuthenticated && (
           <Link to="/order-history" className="list-group-item">Order History</Link>
-        )}        
+        )}
 
         {/* Staff Section */}
         {isStaff && (
@@ -37,7 +37,9 @@ const Dashboard = () => {
             <Link to="/admin-order-submit" className="list-group-item">Submit Order (Admin)</Link>
 
             <h5 className="mt-4">Other Admin Operations</h5>
-            <Link to="/fxrates" className="list-group-item">FX Rates Admin</Link>
+            <Link to="/fxrates" className="list-group-item">FX Rates Admin</Link>            
+            <Link to="/weight-costs" className="list-group-item">Weight Cost Admin</Link>
+
           </>
         )}
       </div>

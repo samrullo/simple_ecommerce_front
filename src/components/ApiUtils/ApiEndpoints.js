@@ -40,3 +40,7 @@ export const ORDERS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/orders/`
 export const CUSTOMERS_BY_ADMIN_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/admin-customers/`;
 export const ADMIN_ORDERS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/admin-orders/`;
 export const CREATE_ORDER_BY_ADMIN_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/admin-create-order/`;
+
+export const WEIGHT_COSTS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/weight-costs/`;
+export const CREATE_UPDATE_WEIGHT_COST_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/create-or-update-weight-cost/`;
+export const ACTIVE_WEIGHT_COST_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/active-weight-cost/`;

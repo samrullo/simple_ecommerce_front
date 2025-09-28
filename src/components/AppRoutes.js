@@ -45,6 +45,12 @@ import FXRateEdit from "./fxrates/FXRateEdit";
 import FXRateNew from "./fxrates/FXRateNew";
 // (later: import FXRateNew from "./fx/FXRateNew";)
 
+// Weight Cost components
+import WeightCost from "./weight_costs/WeightCost";
+import WeightCostNew from "./weight_costs/WeightCostNew";
+import WeightCostEdit from "./weight_costs/WeightCostEdit";
+
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -91,6 +97,11 @@ const AppRoutes = () => {
         <Route path="/admin-add-to-cart/:productId" element={<AdminAddToCartForCustomer />} />
         <Route path="/admin-shopping-cart" element={<AdminShoppingCart />} />
         <Route path="/admin-order-submit" element={<AdminOrderSubmit />} />
+
+        {/* Weight costs */}
+        <Route path="/weight-costs" element={<WeightCost />} />
+        <Route path="/weight-costs/new" element={<WeightCostNew />} />
+        <Route path="/weight-costs/edit/active" element={<WeightCostEdit />} />
 
         {/* Contacts */}
         <Route path="/contacts" element={<Contact />}>
