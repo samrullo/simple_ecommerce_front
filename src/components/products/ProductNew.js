@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 import GenericNewData from "../GenericDataComponents/GenericNewData";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
@@ -83,11 +84,30 @@ const ProductNew = () => {
       setFieldValue: setSku,
     },
     {
-      fieldName: "description",
-      fieldType: "textarea",
-      fieldLabel: "Description",
+      fieldType: "custom",
+      fieldLabel: "Description (Markdown)",
       fieldValue: description,
       setFieldValue: setDescription,
+      fieldProps: {
+        render: () => (
+          <div className="row">
+            <div className="col-md-6">
+              <textarea
+                className="form-control"
+                rows="10"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+            <div className="col-md-6">
+              <label className="form-label">Live Preview:</label>
+              <div className="border rounded p-2 bg-light" style={{ minHeight: "250px" }}>
+                <ReactMarkdown>{description}</ReactMarkdown>
+              </div>
+            </div>
+          </div>
+        )
+      }
     },
     {
       fieldName: "price",

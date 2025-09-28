@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 import { useApi } from "../hooks/useApi";
 import { PRODUCTS_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 import { handleAddToCart } from "./order_utils";
@@ -53,7 +54,7 @@ const AddToCart = () => {
                     )}
                     <div>
                         <h5>{product.name}</h5>
-                        <p>{product.description}</p>
+                        <ReactMarkdown>{product.description}</ReactMarkdown>
                         <p>
                             <strong>
                                 {product.price?.[0]?.price} {product.price?.[0]?.currency?.code}
