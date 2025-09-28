@@ -53,7 +53,16 @@ const FormField = ({
         />
       </div>
     );
-  } else {
+  }
+  else if (fieldType == "custom" && typeof fieldProps.render==="function") {
+    return (
+      <div className="form-group">
+        <label>{fieldLabel}</label>
+        {fieldProps.render()}
+      </div>
+    );
+  }
+  else {
     return (
       <div className="form-group">
         <label>{fieldLabel}</label>

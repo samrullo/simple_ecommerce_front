@@ -1,6 +1,7 @@
 // src/components/products/ProductDetail.js
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
 import { PRODUCTS_ENDPOINT } from "../ApiUtils/ApiEndpoints";
@@ -69,7 +70,7 @@ const ProductDetail = () => {
 
                 <div className="col-md-7">
                     <h2>{product.name}</h2>
-                    <p>{product.description}</p>
+                    <ReactMarkdown>{product.description}</ReactMarkdown>
                     <p><strong>Price:</strong> {activePrice?.price} {activePrice?.currency?.code}</p>
                     <p><strong>Stock:</strong> {stock}</p>
 
