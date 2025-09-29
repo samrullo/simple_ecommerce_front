@@ -45,8 +45,11 @@ const WeightCostNew = () => {
     {
       fieldType: "select",
       fieldLabel: "Currency",
-      fieldValue: currencies.find((c) => c.id === form.currency_id) || null,
-      setFieldValue: (v) => setForm({ ...form, currency_id: v.id }),
+      fieldValue:
+        currencies
+          .map((c) => ({ value: c.id, label: `${c.code} - ${c.name}`, id: c.id }))
+          .find((opt) => opt.value === form.currency_id) || null,
+      setFieldValue: (v) => setForm({ ...form, currency_id: v.value }),
       selectOptions: currencies.map((c) => ({
         value: c.id,
         label: `${c.code} - ${c.name}`,

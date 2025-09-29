@@ -7,7 +7,7 @@ const Dashboard = () => {
   const isStaff = userInfo?.is_staff || userInfo?.is_superuser;
 
   return (
-    <>
+    <div className="container mb-5">
       <h1>Dashboard</h1>
       <div className="list-group">
 
@@ -39,11 +39,12 @@ const Dashboard = () => {
             <h5 className="mt-4">Other Admin Operations</h5>
             <Link to="/fxrates" className="list-group-item">FX Rates Admin</Link>            
             <Link to="/weight-costs" className="list-group-item">Weight Cost Admin</Link>
+            <Link to="/profit-rates" className="list-group-item">Profit Rate Admin</Link>
 
           </>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

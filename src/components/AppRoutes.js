@@ -50,6 +50,10 @@ import WeightCost from "./weight_costs/WeightCost";
 import WeightCostNew from "./weight_costs/WeightCostNew";
 import WeightCostEdit from "./weight_costs/WeightCostEdit";
 
+// profit rate components
+import ProfitRate from "./profit_rates/ProfitRate";
+import ProfitRateNew from "./profit_rates/ProfitRateNew";
+import ProfitRateEdit from "./profit_rates/ProfitRateEdit";
 
 const AppRoutes = () => {
   return (
@@ -102,6 +106,11 @@ const AppRoutes = () => {
         <Route path="/weight-costs" element={<WeightCost />} />
         <Route path="/weight-costs/new" element={<WeightCostNew />} />
         <Route path="/weight-costs/edit/active" element={<WeightCostEdit />} />
+
+        {/* Profit rates */}
+        <Route path="/profit-rates" element={<ProfitRate />} />
+        <Route path="/profit-rates/new" element={<ProfitRateNew />} />
+        <Route path="/profit-rates/edit/active" element={<ProfitRateEdit />} />
 
         {/* Contacts */}
         <Route path="/contacts" element={<Contact />}>

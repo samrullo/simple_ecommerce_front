@@ -44,3 +44,7 @@ export const CREATE_ORDER_BY_ADMIN_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/admi
 export const WEIGHT_COSTS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/weight-costs/`;
 export const CREATE_UPDATE_WEIGHT_COST_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/create-or-update-weight-cost/`;
 export const ACTIVE_WEIGHT_COST_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/active-weight-cost/`;
+
+export const PROFIT_RATES_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/profit-rates/`;
+export const ACTIVE_PROFIT_RATE_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/active-profit-rate/`;
+export const CREATE_UPDATE_PROFIT_RATE_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/create-or-update-profit-rate/`;
