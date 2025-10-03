@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useContext, useMemo } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
+import { Spinner } from "../util_components/Spinner";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
 import {
@@ -206,11 +207,7 @@ const Product = () => {
       <Outlet />
 
       {loading ? (
-        <div className="text-center mt-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
+        <Spinner />
       ) : products.length === 0 ? (
         <p>No products available</p>
       ) : (

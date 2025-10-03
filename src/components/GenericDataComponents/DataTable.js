@@ -62,7 +62,7 @@ const DataTable = ({
         );
     };
     
-    //check if passed datetime is a valida datetime
+    //check if passed datetime is a valid datetime
     const isValidDate = (value) =>
         typeof value === "string" && moment(value, moment.ISO_8601, true).isValid();
 
