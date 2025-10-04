@@ -280,8 +280,7 @@ const PurchaseByDateDetailCreate = () => {
         fieldValue: paymentMethod,
         setFieldValue: setPaymentMethod,
         selectOptions: [
-          { value: "cash_on_delivery", label: "Cash on Delivery" },
-          { value: "credit_card", label: "Credit Card" },
+          { value: "cash_on_delivery", label: "Cash on Delivery" }    
         ],
       }
     );
@@ -310,7 +309,7 @@ const PurchaseByDateDetailCreate = () => {
             sold_quantity: orderQuantity,
             sold_price_per_unit: soldPrice,
             sold_currency_id: soldPriceCurrency?.value,
-            payment_method: paymentMethod,
+            payment_method: paymentMethod?.value,
             base_currency_id: currencies.find((c) => c.label.startsWith(baseCurrency))?.value,
           },
           true
