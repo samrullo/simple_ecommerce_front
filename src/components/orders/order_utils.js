@@ -10,8 +10,8 @@ export  const handleAddToCart = (product,quantity,navigate) => {
                 id: product.id,
                 name: product.name,
                 description: product.description,
-                price: product.price?.[0]?.price,
-                currency: product.price?.[0]?.currency?.code,
+                price: product.price,
+                currency: product.currency,
                 image: product.image,
                 quantity: Number(quantity),
             });

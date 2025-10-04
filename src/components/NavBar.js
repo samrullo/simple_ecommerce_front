@@ -2,6 +2,7 @@ import React from "react";
 import { useContext } from "react";
 import AppContext from "../AppContext";
 import { Link } from "react-router-dom";
+import { FaShoppingCart } from "react-icons/fa";
 import Logout from "./user_management/Logout";
 
 const NavBar = ({ title }) => {
@@ -36,6 +37,10 @@ const NavBar = ({ title }) => {
               <Logout />
               <Link to="/profile" className="nav-link">
                 Profile
+              </Link>
+              <Link to="/shopping-cart" className="nav-link flex items-center gap-2">
+                <FaShoppingCart />
+                Shopping Cart
               </Link>
             </>
           ) : (

@@ -19,6 +19,8 @@ export const PRODUCTS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/products/`;
 export const PRODUCTS_WITH_IMAGES_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/products-with-images/`;
 export const PRODUCTS_WITH_ICON_IMAGE_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/products-with-icon-image/`;
 export const MINIMAL_PRODUCTS_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/minimal-products/`;
+export const PRODUCT_IMAGES_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/product-images/`;
+
 export const LAST_PURCHASE_PRICES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/last-purchase-prices`;
 export const PRODUCT_TOTAL_INVENTORIES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/product-total-inventories/`;
 export const ACTIVE_PRODUCT_PRICES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/active-product-prices/`;

@@ -123,7 +123,7 @@ const AppRoutes = () => {
       <Route path="/product-create-update-from-csv" element={<ProductCreateUpdateFromCSV />} />
       <Route path="/purchase-create-update-from-csv" element={<PurchaseCreateUpdateFromCSV />} />
       <Route path="/purchases-by-date-summary" element={<PurchaseByDateSummary />} />
-      <Route path="/add-product-to-cart/:id" element={<AddToCart />} />
+      <Route path="/add-product-to-cart/:productId" element={<AddToCart />} />
       <Route path="/shopping-cart" element={<ShoppingCart />} />
       <Route path="/order-summary/:orderId" element={<OrderSummary />} />
       <Route path="/order-history" element={<OrderHistory />} />

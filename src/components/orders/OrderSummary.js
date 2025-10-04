@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams,Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import moment from "moment-timezone";
 import { useApi } from "../hooks/useApi";
 import { ORDERS_ENDPOINT } from "../ApiUtils/ApiEndpoints";
@@ -88,9 +88,11 @@ const OrderSummary = () => {
         </tbody>
       </table>
       <div className="mt-4 d-flex align-items-center gap-3">
+        <Link to="/products" className="btn btn-secondary mt-4">Continue shopping</Link>
         <Link to="/order-history" className="btn btn-secondary mt-4">
-          Back to Order history
+          Order history
         </Link>
+
       </div>
     </div>
   );

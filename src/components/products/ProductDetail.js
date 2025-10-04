@@ -3,45 +3,34 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import AppContext from "../../AppContext";
-import { useApi } from "../hooks/useApi";
-import { PRODUCTS_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import { useSingleProductData } from "../hooks/useSingleProductData";
 import { handleAddToCart } from "../orders/order_utils";
+import { Spinner } from "../util_components/Spinner";
 
 const ProductDetail = () => {
     const { productId } = useParams();
-    const { get } = useApi();
+
     const navigate = useNavigate();
     const { baseCurrency, setFlashMessages } = useContext(AppContext);
 
-    const [product, setProduct] = useState(null);
+
     const [quantity, setQuantity] = useState(1);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const data = await get(`${PRODUCTS_ENDPOINT}${productId}/`, false);
-                setProduct(data);
-            } catch (error) {
-                console.error("Failed to fetch product:", error);
-                setFlashMessages([{ category: "danger", message: "Failed to load product details." }]);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProduct();
-    }, [productId]);
 
 
+    const { product,
+        productPrice,
+        loading,
+        productImages } = useSingleProductData(productId, baseCurrency, [baseCurrency])
 
-    if (loading) return <p>Loading product...</p>;
+
+    if (loading) return <Spinner />;
     if (!product) return <p>Product not found.</p>;
 
-    const activePrice = product.price?.find((p) => p.end_date === null);
-    const iconImage = product.images?.find((img) => img.tag === "icon")?.image;
-    const otherImages = product.images?.filter((img) => img.tag !== "icon");
+    const activePrice = productPrice
+    const iconImage = product.image
+    const otherImages = productImages?.filter((img) => img.tag !== "icon");
 
-    const stock = product.inventory?.reduce((sum, inv) => sum + inv.stock, 0) || 0;
+    const stock = product.inventory || 0;
 
     return (
         <div className="container mt-4">

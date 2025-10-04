@@ -91,8 +91,9 @@ const AdminOrderSummary = () => {
                 </tbody>
             </table>
             <div className="mt-4 d-flex align-items-center gap-3">
+                <Link to="/admin-products-for-customer" className="btn btn-secondary mt-4">Continue shopping for Customer</Link>
                 <Link to="/admin-orders" className="btn btn-secondary mt-4">
-                    Back to Orders List
+                    Orders List
                 </Link>
             </div>
         </div>

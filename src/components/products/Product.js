@@ -5,91 +5,23 @@ import DataTable from "../GenericDataComponents/DataTable";
 import { Spinner } from "../util_components/Spinner";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
-import {
-  PRODUCTS_WITH_ICON_IMAGE_ENDPOINT,
-  ACTIVE_PRODUCT_PRICES_ENDPOINT,
-  PRODUCT_TOTAL_INVENTORIES_ENDPOINT,
-  ACTIVE_FXRATES_ENDPOINT
-} from "../ApiUtils/ApiEndpoints";
+import { useProductData } from "../hooks/useProductData";
 
 const Product = () => {
   const { userInfo, baseCurrency } = useContext(AppContext);
-  const { get } = useApi();
   const navigate = useNavigate();
   const { state = {} } = useLocation();
   const { timestamp } = state ?? {};
 
-  const [products, setProducts] = useState([]);
-  const [productPrices, setProductPrices] = useState([]);
-  const [productInventories, setProductInventories] = useState([]);
-  const [fxRates, setFxRates] = useState([]);
+  
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [detailedView, setDetailedView] = useState(false);
-  const [loading, setLoading] = useState(true);
+  
 
-  // Fetch core products only
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const data = await get(PRODUCTS_WITH_ICON_IMAGE_ENDPOINT, false);
-        setProducts(
-          data.map(product => ({
-            ...product,
-            category: product.category?.name || "",
-            brand: product.brand?.name || "",
-            tags: product.tags?.map(tag => tag.name).join(", ") || "",
-            image: product.icon_image?.image || null,
-            // placeholders to be filled later
-            price: "",
-            currency: "",
-            price_in_base_currency: "",
-            inventory: "",
-            base_currency: baseCurrency,
-            add_to_cart: "",
-            product_id: product.id
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, [timestamp]);
-
-  // Fetch supporting data (prices, inventories, fx)
-  useEffect(() => {
-    const fetchData = async () => {
-      const [prices, inventories, rates] = await Promise.all([
-        get(ACTIVE_PRODUCT_PRICES_ENDPOINT, false),
-        get(PRODUCT_TOTAL_INVENTORIES_ENDPOINT, false),
-        get(ACTIVE_FXRATES_ENDPOINT, false)
-      ]);
-
-      setProductPrices(prices);
-      setProductInventories(inventories);
-      setFxRates(
-        rates.map(rate => ({
-          currency_from: rate.currency_from.code,
-          currency_to: rate.currency_to.code,
-          rate: parseFloat(rate.rate)
-        }))
-      );
-    };
-    fetchData();
-  }, [timestamp]);
-
-  // Helper to convert price
-  const convertPrice = (price, from, to) => {
-    if (!price) return "";
-    if (from === to) return price;
-    const fx = fxRates.find(fx => fx.currency_from === from && fx.currency_to === to);
-    return fx ? price * fx.rate : price;
-  };
-
+  const { products, productPrices, productInventories, fxRates, loading, convertPrice } =
+  useProductData(baseCurrency, [timestamp]);
+  
   const enrichedProducts = useMemo(() => {
     return products.map(prod => {
       const priceObj = productPrices.find(p => p.product === prod.id);
@@ -107,6 +39,7 @@ const Product = () => {
       };
     });
   }, [products, productPrices, productInventories, fxRates, baseCurrency]);
+  
   // Handle edit mode navigation
   useEffect(() => {
     if (editMode && selectedRowData && (userInfo?.is_staff || userInfo?.is_superuser)) {
