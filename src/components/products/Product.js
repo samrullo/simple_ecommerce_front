@@ -3,8 +3,8 @@ import React, { useEffect, useState, useContext, useMemo } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
 import { Spinner } from "../util_components/Spinner";
+import ToggleSwitch from "../util_components/ToggleSwitch";
 import AppContext from "../../AppContext";
-import { useApi } from "../hooks/useApi";
 import { useProductData } from "../hooks/useProductData";
 
 const Product = () => {
@@ -13,15 +13,15 @@ const Product = () => {
   const { state = {} } = useLocation();
   const { timestamp } = state ?? {};
 
-  
+
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [detailedView, setDetailedView] = useState(false);
-  
+
 
   const { products, productPrices, productInventories, fxRates, loading, convertPrice } =
-  useProductData(baseCurrency, [timestamp]);
-  
+    useProductData(baseCurrency, [timestamp]);
+
   const enrichedProducts = useMemo(() => {
     return products.map(prod => {
       const priceObj = productPrices.find(p => p.product === prod.id);
@@ -39,7 +39,7 @@ const Product = () => {
       };
     });
   }, [products, productPrices, productInventories, fxRates, baseCurrency]);
-  
+
   // Handle edit mode navigation
   useEffect(() => {
     if (editMode && selectedRowData && (userInfo?.is_staff || userInfo?.is_superuser)) {
@@ -101,18 +101,7 @@ const Product = () => {
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center">
         <h1>Products</h1>
-        <div className="form-check form-switch">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="detailedViewSwitch"
-            checked={detailedView}
-            onChange={() => setDetailedView(!detailedView)}
-          />
-          <label className="form-check-label" htmlFor="detailedViewSwitch">
-            Detailed View
-          </label>
-        </div>
+        <ToggleSwitch id="detailView" label="Detailed View" checked={detailedView} onChange={() => setDetailedView(!detailedView)} />
       </div>
 
       {userInfo?.is_staff && (
@@ -121,19 +110,11 @@ const Product = () => {
             <Link className="btn btn-primary me-2" to="/products/new">New Product</Link>
             <Link className="btn btn-primary" to="/product-create-update-from-csv">Products From CSV file</Link>
           </div>
-
-          <div className="form-check form-switch mb-2">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              id="editModeSwitch"
-              checked={editMode}
-              onChange={() => setEditMode(!editMode)}
-            />
-            <label className="form-check-label" htmlFor="editModeSwitch">
-              Edit Mode
-            </label>
-          </div>
+          <ToggleSwitch
+            id="editModeSwitch"
+            label="Edit Mode"
+            checked={editMode}
+            onChange={() => setEditMode(!editMode)} />
         </>
       )}
 

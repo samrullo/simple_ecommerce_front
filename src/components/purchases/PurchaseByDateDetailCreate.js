@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import GenericNewData from "../GenericDataComponents/GenericNewData";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
+import ToggleSwitch from "../util_components/ToggleSwitch";
 import {
   MINIMAL_PRODUCTS_ENDPOINT,
   ACTIVE_WEIGHT_COST_ENDPOINT,
@@ -47,8 +48,8 @@ const PurchaseByDateDetailCreate = () => {
   const [soldPrice, setSoldPrice] = useState("");
   const [soldPriceCurrency, setSoldPriceCurrency] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [orderQuantity, setOrderQuantity] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("cash_on_delivery");
+  const [orderQuantity, setOrderQuantity] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState({ value: "cash_on_delivery", label: "Cash on Delivery" });
 
   const [loading, setLoading] = useState(false);
 
@@ -155,7 +156,7 @@ const PurchaseByDateDetailCreate = () => {
     if (match) {
       if (match.productPrice) {
         setSoldPrice(match.productPrice?.price);
-        setSoldPriceCurrency({value:match.productPrice?.currency?.id,label:match.productPrice?.currency?.code})
+        setSoldPriceCurrency({ value: match.productPrice?.currency?.id, label: match.productPrice?.currency?.code })
         console.log(`match.productPrice is ${JSON.stringify(match.productPrice)}`)
       }
 
@@ -182,7 +183,7 @@ const PurchaseByDateDetailCreate = () => {
       try {
         const data = await get(ACTIVE_WEIGHT_COST_ENDPOINT, false)
         setWeightCost(data?.cost_per_kg)
-        setWeightCostCurrency({value:data?.weight_cost_currency?.id,label:data?.weight_cost_currency?.code})
+        setWeightCostCurrency({ value: data?.weight_cost_currency?.id, label: data?.weight_cost_currency?.code })
 
       } catch (err) {
         console.log(`Error while fetching weight cost ${JSON.stringify(err)}`)
@@ -252,7 +253,7 @@ const PurchaseByDateDetailCreate = () => {
     formFields.push(
       { fieldType: "number", fieldLabel: "Product Weight", fieldValue: weight, setFieldValue: setWeight },
       { fieldType: "number", fieldLabel: "Weight Cost per Kg", fieldValue: weightCost, setFieldValue: setWeightCost },
-      {fieldType:"select",fieldLabel:"Weight Cost Currency",fieldValue:weightCostCurrency,setFieldValue:setWeightCostCurrency,selectOptions:currencies,fieldProps:{disabled:true}},
+      { fieldType: "select", fieldLabel: "Weight Cost Currency", fieldValue: weightCostCurrency, setFieldValue: setWeightCostCurrency, selectOptions: currencies, fieldProps: { disabled: true } },
       { fieldType: "number", fieldLabel: "Profit Rate", fieldValue: profitRate, setFieldValue: setProfitRate },
       {
         fieldType: "number",
@@ -260,12 +261,14 @@ const PurchaseByDateDetailCreate = () => {
         fieldValue: soldPrice,
         setFieldValue: setSoldPrice
       },
-      {fieldType:"select",
-        fieldLabel:"Sold Price Currency",
-        fieldValue:soldPriceCurrency,
-        setFieldValue:setSoldPriceCurrency,
-        selectOptions:currencies,
-        fieldProps:{disabled:true}},
+      {
+        fieldType: "select",
+        fieldLabel: "Sold Price Currency",
+        fieldValue: soldPriceCurrency,
+        setFieldValue: setSoldPriceCurrency,
+        selectOptions: currencies,
+        fieldProps: { disabled: true }
+      },
       {
         fieldType: "select",
         fieldLabel: "Customer",
@@ -280,7 +283,7 @@ const PurchaseByDateDetailCreate = () => {
         fieldValue: paymentMethod,
         setFieldValue: setPaymentMethod,
         selectOptions: [
-          { value: "cash_on_delivery", label: "Cash on Delivery" }    
+          { value: "cash_on_delivery", label: "Cash on Delivery" }
         ],
       }
     );
@@ -348,6 +351,11 @@ const PurchaseByDateDetailCreate = () => {
       submitButtonLabel={loading ? "Submitting..." : raiseOrder ? "Create Purchase + Order" : "Create Purchase"}
       disableSubmit={loading}
     />
+    {raiseOrder ? (<div className="mt-4 mb-4">
+      <button className="btn btn-primary" onClick={handleApplyProfit}>Recalculate Price</button>
+    </div>) : (<></>)}
+
+
   </>
   );
 };
