@@ -23,7 +23,7 @@ const Dashboard = () => {
           <>
             <h5 className="mt-4">Purchases</h5>
             <Link to="/purchases-by-date-summary" className="list-group-item">Purchases By Date Summary</Link>
-            <Link to="/purchases" className="list-group-item">All Purchases</Link>
+            <Link to="/create-purchase-order-from-csv" className="list-group-item">Purchase Order from CSV</Link>
 
             <h5 className="mt-4">Customer Management</h5>
             <Link to="/admin-customers" className="list-group-item">Customers Managed by Admin</Link>

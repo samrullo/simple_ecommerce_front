@@ -28,6 +28,7 @@ import ForgotPassword from "./user_management/ForgotPassword";
 import ResetPasswordConfirm from "./user_management/ResetPasswordConfirm";
 import ProductCreateUpdateFromCSV from "./products/ProductCreateUpdateFromCSV";
 import PurchaseCreateUpdateFromCSV from "./purchases/PurchaseCreateUpdateFromCSV";
+import AdminPurchaseOrderFromCSV from "./purchases/AdminPurchaseOrderFromCSV";
 import AddToCart from "./orders/AddToCart";
 import ShoppingCart from "./orders/ShoppingCart";
 import OrderSummary from "./orders/OrderSummary";
@@ -122,6 +123,7 @@ const AppRoutes = () => {
       {/* Standalone Routes */}
       <Route path="/product-create-update-from-csv" element={<ProductCreateUpdateFromCSV />} />
       <Route path="/purchase-create-update-from-csv" element={<PurchaseCreateUpdateFromCSV />} />
+      <Route path="/create-purchase-order-from-csv" element={<AdminPurchaseOrderFromCSV/>}/>
       <Route path="/purchases-by-date-summary" element={<PurchaseByDateSummary />} />
       <Route path="/add-product-to-cart/:productId" element={<AddToCart />} />
       <Route path="/shopping-cart" element={<ShoppingCart />} />

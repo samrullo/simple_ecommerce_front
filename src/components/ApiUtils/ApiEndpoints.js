@@ -36,6 +36,7 @@ export const PURCHASES_BY_DATE_DETAIL_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/p
 export const PURCHASE_CREATE_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/create-purchase/`;
 export const UPDATE_PURCHASE_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/update-purchase/`;
 export const CREATE_UPDATE_PURCHASES_FROM_CSV_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/create-update-purchases-from-csv/`;
+export const CREATE_PURCHASE_ORDER_FROM_CSV_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/create-purchase-order-from-csv/`;
 export const CREATE_ORDER_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/create-order/`
 export const ORDERS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/orders/`
 export const CREATE_PURCHASE_ORDER_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/create-purchase-order/`
