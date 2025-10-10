@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import GenericNewData from "../GenericDataComponents/GenericNewData";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
-import { PRODUCTS_ENDPOINT,MINIMAL_PRODUCTS_ENDPOINT, PURCHASE_CREATE_ENDPOINT,CURRENCIES_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import { MINIMAL_PRODUCTS_ENDPOINT, PURCHASE_CREATE_ENDPOINT,CURRENCIES_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 
 const PurchaseNew = () => {
   const { get, post } = useApi();

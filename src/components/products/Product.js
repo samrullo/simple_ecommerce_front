@@ -54,7 +54,7 @@ const Product = () => {
     }
   };
 
-  const baseColumns = [
+  var baseColumns = [
     { field: "image", headerName: "Image", fieldType: "image" },
     { field: "name", headerName: "Product Name", tooltipField: "name" },
     { field: "category", headerName: "Category" },
@@ -94,6 +94,19 @@ const Product = () => {
     { field: "is_active", headerName: "Active" },
     { field: "product_id", headerName: "Product Id", fieldType: "text" }
   ];
+
+  const purchaseColumns = [{
+    field: "purchase",
+    headerName: "",
+    fieldType: "link",
+    cellRendererParams: {
+      label: "Admin Purchase",
+      linkTo: row => `/purchases/new/${row.id}`,
+      className: "btn btn-sm btn-info"
+    }
+  }]
+  
+  baseColumns = userInfo?.is_staff ? [...baseColumns, ...purchaseColumns] : baseColumns
 
   const columns = detailedView ? [...baseColumns, ...extraColumns] : baseColumns;
 

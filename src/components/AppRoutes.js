@@ -13,6 +13,7 @@ import PurchaseByDateSummary from "./purchases/PurchaseByDateSummary";
 import PurchaseByDateDetail from "./purchases/PurchaseByDateDetails";
 import PurchaseNew from "./purchases/PurchaseNew";
 import PurchaseEdit from "./purchases/PurchaseEdit";
+import PurchaseNewByProduct from "./purchases/PurchaseNewByProduct";
 import PurchaseByDateDetailCreate from "./purchases/PurchaseByDateDetailCreate";
 import PurchaseByDateDetailEdit from "./purchases/PurchaseByDateDetailEdit";
 import CustomerByAdmin from "./admin_customer_management/CustomerByAdmin";
@@ -81,6 +82,7 @@ const AppRoutes = () => {
           <Route path="new" element={<PurchaseNew />} />
           <Route path="edit/:purchaseId" element={<PurchaseEdit />} />
         </Route>
+        <Route path="/purchases/new/:productId" element={<PurchaseNewByProduct/>}/>
         <Route
           path="/purchases-by-date-detail/:purchaseDate"
           element={<PurchaseByDateDetail />}
