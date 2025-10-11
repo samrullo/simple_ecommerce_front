@@ -176,7 +176,7 @@ const PurchaseNewByProduct = () => {
       setFlashMessages([
         { category: "success", message: "Purchase created successfully." },
       ]);
-      navigate("/purchases", { state: { timestamp: Date.now() } });
+      navigate("/products", { state: { timestamp: Date.now() } });
     } catch (err) {
       console.error(err);
       setFlashMessages([
