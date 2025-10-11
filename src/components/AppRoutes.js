@@ -40,6 +40,8 @@ import AdminProductsForCustomer from "./admin_orders/AdminProductsForCustomer";
 import AdminAddToCartForCustomer from "./admin_orders/AdminAddToCartForCustomer";
 import AdminShoppingCart from "./admin_orders/AdminShoppingCart";
 import AdminOrderSubmit from "./admin_orders/AdminOrderSubmit";
+import TotalsAccountingDateRangeFilter from "./admin_accounting/TotalsAccountingDateRangeFilter";
+import PurchaseOrderIncomeSpendingTotal from "./admin_accounting/PurchaseOrderIncomeSpendingTotal";
 
 // FX Rate Components
 import FXRate from "./fxrates/FXRate";
@@ -56,6 +58,7 @@ import WeightCostEdit from "./weight_costs/WeightCostEdit";
 import ProfitRate from "./profit_rates/ProfitRate";
 import ProfitRateNew from "./profit_rates/ProfitRateNew";
 import ProfitRateEdit from "./profit_rates/ProfitRateEdit";
+
 
 const AppRoutes = () => {
   return (
@@ -82,7 +85,7 @@ const AppRoutes = () => {
           <Route path="new" element={<PurchaseNew />} />
           <Route path="edit/:purchaseId" element={<PurchaseEdit />} />
         </Route>
-        <Route path="/purchases/new/:productId" element={<PurchaseNewByProduct/>}/>
+        <Route path="/purchases/new/:productId" element={<PurchaseNewByProduct />} />
         <Route
           path="/purchases-by-date-detail/:purchaseDate"
           element={<PurchaseByDateDetail />}
@@ -125,7 +128,7 @@ const AppRoutes = () => {
       {/* Standalone Routes */}
       <Route path="/product-create-update-from-csv" element={<ProductCreateUpdateFromCSV />} />
       <Route path="/purchase-create-update-from-csv" element={<PurchaseCreateUpdateFromCSV />} />
-      <Route path="/create-purchase-order-from-csv" element={<AdminPurchaseOrderFromCSV/>}/>
+      <Route path="/create-purchase-order-from-csv" element={<AdminPurchaseOrderFromCSV />} />
       <Route path="/purchases-by-date-summary" element={<PurchaseByDateSummary />} />
       <Route path="/add-product-to-cart/:productId" element={<AddToCart />} />
       <Route path="/shopping-cart" element={<ShoppingCart />} />
@@ -139,6 +142,11 @@ const AppRoutes = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password-confirm/:uid/:token" element={<ResetPasswordConfirm />} />
       <Route path="/verify-email/:key" element={<EmailVerification />} />
+      <Route
+        path="/totals-accounting-date-range-filter"
+        element={<TotalsAccountingDateRangeFilter />}
+      />
+      <Route path="/purchase-order-income-spending-total" element={<PurchaseOrderIncomeSpendingTotal />} />
     </Routes>
   );
 };

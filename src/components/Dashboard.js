@@ -41,6 +41,7 @@ const Dashboard = () => {
             <Link to="/fxrates" className="list-group-item">FX Rates Admin</Link>            
             <Link to="/weight-costs" className="list-group-item">Weight Cost Admin</Link>
             <Link to="/profit-rates" className="list-group-item">Profit Rate Admin</Link>
+            <Link to="/totals-accounting-date-range-filter" className="list-group-item">Totals Accounting Date Range</Link>
 
           </>
         )}

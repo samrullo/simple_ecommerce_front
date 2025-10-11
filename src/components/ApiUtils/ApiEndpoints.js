@@ -52,3 +52,8 @@ export const ACTIVE_WEIGHT_COST_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/active-
 export const PROFIT_RATES_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/profit-rates/`;
 export const ACTIVE_PROFIT_RATE_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/active-profit-rate/`;
 export const CREATE_UPDATE_PROFIT_RATE_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/create-or-update-profit-rate/`;
+
+export const PURCHASES_TOTAL_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/purchase-total-in-accounting-currency/`;
+export const ORDERS_TOTAL_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/order-total-in-accounting-currency/`;
+export const INCOME_TOTAL_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/income-total-in-accounting-currency/`;
+export const SPENDING_TOTAL_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/spending-total-in-accounting-currency/`;
