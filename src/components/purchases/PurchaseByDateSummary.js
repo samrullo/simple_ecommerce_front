@@ -24,6 +24,8 @@ const PurchaseByDateSummary = () => {
             ...entry,
             purchase_date: entry.purchase_date,
             item_count: entry.num_purchases,
+            amount:entry.amount,
+            currency_code:entry.currency_code
           }))
         );
       } catch (error) {
@@ -38,6 +40,8 @@ const PurchaseByDateSummary = () => {
   const columns = [
     { field: "purchase_date", headerName: "Purchase Date", fieldType: "text" },
     { field: "item_count", headerName: "Purchased Items", fieldType: "numeric" },
+    { field: "amount", headerName: "Purchase Amount", fieldType: "numeric" },
+    { field: "currency_code", headerName: "Currency", fieldType: "text" },
     {
       field: "view_details",
       headerName: "Details",

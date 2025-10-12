@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Link, Outlet, useNavigate, useParams,useLocation } from "react-router-dom";
+import React, { useEffect, useState, useContext, useMemo } from "react";
+import { Link, Outlet, useNavigate, useParams, useLocation } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
 import { PURCHASES_BY_DATE_DETAIL_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import { useFxRates } from "../hooks/useFxRates";
 
 const PurchaseByDateDetail = () => {
   const { get } = useApi();
@@ -14,8 +15,9 @@ const PurchaseByDateDetail = () => {
   const [purchases, setPurchases] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const { userInfo } = useContext(AppContext);
+  const { userInfo, baseCurrency } = useContext(AppContext);
   const isStaff = userInfo?.is_staff || userInfo?.is_superuser;
+  const { convert_amount_from_one_currency_to_another } = useFxRates([purchaseDate, timestamp]);
 
   useEffect(() => {
     const fetchPurchases = async () => {
@@ -26,6 +28,7 @@ const PurchaseByDateDetail = () => {
             ...purchase,
             currency: purchase.currency?.code,
             image: purchase.product_image,
+            amount: purchase.price_per_unit * purchase.quantity
           }))
         );
       } catch (error) {
@@ -33,7 +36,7 @@ const PurchaseByDateDetail = () => {
       }
     };
     if (isStaff && purchaseDate) fetchPurchases();
-  }, [isStaff, purchaseDate,timestamp]);
+  }, [isStaff, purchaseDate, timestamp]);
 
   useEffect(() => {
     if (editMode && selectedRowData && isStaff) {
@@ -42,63 +45,109 @@ const PurchaseByDateDetail = () => {
     }
   }, [editMode, selectedRowData, isStaff, navigate, purchaseDate]);
 
-  if (!isStaff) return <p>You are not authorized to view purchases.</p>;
-
   const columns = [
     { field: "image", headerName: "Image", fieldType: "image" },
     { field: "product_name", headerName: "Product", fieldType: "text", tooltipField: "product_name" },
     { field: "quantity", headerName: "Quantity", fieldType: "numeric" },
     { field: "price_per_unit", headerName: "Unit Price", fieldType: "numeric" },
+    { field: "amount", headerName: "Amount", fieldType: "numeric" },
     { field: "currency", headerName: "Currency", fieldType: "text" },
     { field: "purchase_datetime", headerName: "Purchase Date", fieldType: "datetime" },
     { field: "created_at", headerName: "Created At", fieldType: "datetime" },
     { field: "updated_at", headerName: "Updated At", fieldType: "datetime" },
   ];
 
+  const totalAmountInBaseCurrency = useMemo(() => {
+    if (!baseCurrency) return null;
+    return purchases.reduce((sum, purchase) => {
+      const amount = Number(purchase.amount);
+      if (!Number.isFinite(amount)) return sum;
+      const converted = convert_amount_from_one_currency_to_another(
+        amount,
+        purchase.currency,
+        baseCurrency
+      );
+      return converted != null ? sum + converted : sum;
+    }, 0);
+  }, [purchases, baseCurrency, convert_amount_from_one_currency_to_another]);
+
+  const formattedTotalAmount = useMemo(() => {
+    if (totalAmountInBaseCurrency == null) return "N/A";
+    const currencyForDisplay = baseCurrency || "USD";
+    try {
+      return totalAmountInBaseCurrency.toLocaleString(undefined, {
+        style: "currency",
+        currency: currencyForDisplay,
+      });
+    } catch (_err) {
+      return totalAmountInBaseCurrency.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+    }
+  }, [totalAmountInBaseCurrency, baseCurrency]);
+
   return (
     <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h1>Purchases on {purchaseDate}</h1>
-        <div className="d-flex align-items-center">
-          <div className="form-check form-switch me-3">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              id="editModeSwitch"
-              checked={editMode}
-              onChange={() => setEditMode(!editMode)}
-            />
-            <label className="form-check-label" htmlFor="editModeSwitch">
-              Edit Mode
-            </label>
-          </div>
-          <Link
-            className="btn btn-primary"
-            to={`/purchases-by-date-detail/${purchaseDate}/new`}
-          >
-            New Purchase for {purchaseDate}
-          </Link>
-        </div>
-      </div>
-
-      <Outlet />
-
-      {purchases.length === 0 ? (
-        <p>No purchases found on this date.</p>
+      {!isStaff ? (
+        <p>You are not authorized to view purchases.</p>
       ) : (
-        <DataTable
-          data={purchases}
-          columns={columns}
-          hiddenColumns={["id"]}
-          width_pct={100}
-          onRowClick={(event) => {
-            if (editMode && isStaff) {
-              setSelectedRowData(event.data);
-            }
-          }}
-        />
+        <>
+          <div className="d-flex justify-content-between align-items-center">
+            <h1>Purchases on {purchaseDate}</h1>
+            <div className="d-flex align-items-center">
+              <div className="form-check form-switch me-3">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="editModeSwitch"
+                  checked={editMode}
+                  onChange={() => setEditMode(!editMode)}
+                />
+                <label className="form-check-label" htmlFor="editModeSwitch">
+                  Edit Mode
+                </label>
+              </div>
+              <Link
+                className="btn btn-primary"
+                to={`/purchases-by-date-detail/${purchaseDate}/new`}
+              >
+                New Purchase for {purchaseDate}
+              </Link>
+            </div>
+          </div>
+
+          <Outlet />
+
+          <div className="alert alert-info mt-3">
+            Total Amount in {baseCurrency || "Base Currency"}: {formattedTotalAmount}
+          </div>
+          <Link className="btn btn-secondary mb-4" to="/purchases-by-date-summary">
+            Back to Purchases Summary
+          </Link>
+
+          {purchases.length === 0 ? (
+            <p>No purchases found on this date.</p>
+          ) : (
+            <DataTable
+              data={purchases}
+              columns={columns}
+              hiddenColumns={["id"]}
+              width_pct={100}
+              onRowClick={(event) => {
+                if (editMode && isStaff) {
+                  setSelectedRowData(event.data);
+                }
+              }}
+            />
+          )}
+
+        </>
       )}
+
     </div>
+
+
   );
 };
 
