@@ -59,6 +59,14 @@ import ProfitRate from "./profit_rates/ProfitRate";
 import ProfitRateNew from "./profit_rates/ProfitRateNew";
 import ProfitRateEdit from "./profit_rates/ProfitRateEdit";
 
+// spending components
+import Spending from "./spendings/Spending";
+import SpendingNew from "./spendings/SpendingNew";
+import SpendingEdit from "./spendings/SpendingEdit";
+import SpendingName from "./spendings/SpendingName";
+import SpendingNameNew from "./spendings/SpendingNameNew";
+import SpendingNameEdit from "./spendings/SpendingNameEdit";
+
 
 const AppRoutes = () => {
   return (
@@ -117,6 +125,16 @@ const AppRoutes = () => {
         <Route path="/profit-rates" element={<ProfitRate />} />
         <Route path="/profit-rates/new" element={<ProfitRateNew />} />
         <Route path="/profit-rates/edit/active" element={<ProfitRateEdit />} />
+
+        {/* Spendings */}
+        <Route path="/spendings" element={<Spending />}>
+          <Route path="new" element={<SpendingNew />} />
+          <Route path="edit/:spendingId" element={<SpendingEdit />} />
+        </Route>
+        <Route path="/spending-names" element={<SpendingName />}>
+          <Route path="new" element={<SpendingNameNew />} />
+          <Route path="edit/:spendingNameId" element={<SpendingNameEdit />} />
+        </Route>
 
         {/* Contacts */}
         <Route path="/contacts" element={<Contact />}>

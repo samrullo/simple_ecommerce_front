@@ -39,7 +39,7 @@ const PurchaseNewByProduct = () => {
       try {
         const data = await get(CURRENCIES_ENDPOINT);
         const options = data.map((c) => ({
-          value: c.id,
+          value: c.code,
           label: `${c.code} - ${c.name}`,
         }));
         setCurrencies(options);
@@ -100,7 +100,7 @@ const PurchaseNewByProduct = () => {
       if (match.last_price) setPricePerUnit(match.last_price);
       if (match.last_currency) {
         const option = currencies.find(
-          (c) => c.value === match.last_currency.id
+          (c) => c.value === match.last_currency.code
         );
         setSelectedCurrency(option || null);
       } else {
@@ -167,7 +167,7 @@ const PurchaseNewByProduct = () => {
           product_id: selectedProduct.value,
           quantity,
           price_per_unit: pricePerUnit,
-          currency_id: selectedCurrency?.value,
+          currency: selectedCurrency?.value,
           purchase_datetime: new Date().toISOString(), // always use now
         },
         true

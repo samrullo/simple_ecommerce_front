@@ -43,6 +43,10 @@ const Dashboard = () => {
             <Link to="/profit-rates" className="list-group-item">Profit Rate Admin</Link>
             <Link to="/totals-accounting-date-range-filter" className="list-group-item">Totals Accounting Date Range</Link>
 
+            <h5 className="mt-4">Spendings</h5>
+            <Link to="/spendings" className="list-group-item">Spendings</Link>
+            <Link to="/spending-names" className="list-group-item">Spending Names</Link>
+
           </>
         )}
       </div>

@@ -57,3 +57,5 @@ export const PURCHASES_TOTAL_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/purchase-tot
 export const ORDERS_TOTAL_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/order-total-in-accounting-currency/`;
 export const INCOME_TOTAL_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/income-total-in-accounting-currency/`;
 export const SPENDING_TOTAL_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/spending-total-in-accounting-currency/`;
+export const SPENDINGS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/spendings/`;
+export const SPENDING_NAMES_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/spending-names/`;
