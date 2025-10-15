@@ -1,11 +1,26 @@
 import { useEffect, useState } from "react";
 import {
-  PRODUCTS_WITH_ICON_IMAGE_ENDPOINT,
+  PRODUCTS_WITH_ICON_IMAGE_PAGINATED_ENDPOINT,
   ACTIVE_PRODUCT_PRICES_ENDPOINT,
   PRODUCT_TOTAL_INVENTORIES_ENDPOINT,
   ACTIVE_FXRATES_ENDPOINT,
 } from "../ApiUtils/ApiEndpoints";
 import { useApi } from "./useApi";
+
+export const formatProductRecord = (product, baseCurrency) => ({
+  ...product,
+  category: product.category?.name || "",
+  brand: product.brand?.name || "",
+  tags: product.tags?.map((tag) => tag.name).join(", ") || "",
+  image: product.icon_image?.image || null,
+  // placeholders
+  price: "",
+  currency: "",
+  price_in_base_currency: "",
+  inventory: "",
+  base_currency: baseCurrency,
+  product_id: product.id,
+});
 
 // Hook to fetch products with prices, inventories, fx
 export const useProductData = (baseCurrency, deps = []) => {
@@ -16,32 +31,46 @@ export const useProductData = (baseCurrency, deps = []) => {
   const [productInventories, setProductInventories] = useState([]);
   const [fxRates, setFxRates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [productPageInfo, setProductPageInfo] = useState({
+    count: 0,
+    next: null,
+    previous: null,
+  });
 
   // Fetch products with icon image
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const data = await get(PRODUCTS_WITH_ICON_IMAGE_ENDPOINT, false);
+        const pageData = await get(PRODUCTS_WITH_ICON_IMAGE_PAGINATED_ENDPOINT, false);
+        const data = Array.isArray(pageData)
+          ? pageData
+          : pageData?.results || [];
+
         setProducts(
-          data.map((product) => ({
-            ...product,
-            category: product.category?.name || "",
-            brand: product.brand?.name || "",
-            tags: product.tags?.map((tag) => tag.name).join(", ") || "",
-            image: product.icon_image?.image || null,
-            // placeholders
-            price: "",
-            currency: "",
-            price_in_base_currency: "",
-            inventory: "",
-            base_currency: baseCurrency,
-            product_id: product.id,
-          }))
+          data.map((product) => formatProductRecord(product, baseCurrency))
         );
+        if (!Array.isArray(pageData)) {
+          setProductPageInfo({
+            count: pageData?.count ?? data.length,
+            next: pageData?.next ?? null,
+            previous: pageData?.previous ?? null,
+          });
+        } else {
+          setProductPageInfo({
+            count: data.length,
+            next: null,
+            previous: null,
+          });
+        }
       } catch (err) {
         console.error("Failed to fetch products:", err);
         setProducts([]);
+        setProductPageInfo({
+          count: 0,
+          next: null,
+          previous: null,
+        });
       } finally {
         setLoading(false);
       }
@@ -94,5 +123,6 @@ export const useProductData = (baseCurrency, deps = []) => {
     fxRates,
     loading,
     convertPrice,
+    productPageInfo,
   };
 };

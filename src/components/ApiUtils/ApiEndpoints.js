@@ -18,6 +18,7 @@ export const CREATE_UPDATE_FXRATES_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/create
 export const PRODUCTS_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/products/`;
 export const PRODUCTS_WITH_IMAGES_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/products-with-images/`;
 export const PRODUCTS_WITH_ICON_IMAGE_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/products-with-icon-image/`;
+export const PRODUCTS_WITH_ICON_IMAGE_PAGINATED_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/products-with-icon-image-paginated/`;
 export const MINIMAL_PRODUCTS_ENDPOINT=`${API_HOSTNAME}/ecommerce/v1/minimal-products/`;
 export const PRODUCT_IMAGES_ENDPOINT = `${API_HOSTNAME}/ecommerce/v1/product-images/`;
 

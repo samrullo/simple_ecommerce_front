@@ -1,11 +1,12 @@
 // Product.js
-import React, { useEffect, useState, useContext, useMemo } from "react";
+import React, { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
 import { Spinner } from "../util_components/Spinner";
 import ToggleSwitch from "../util_components/ToggleSwitch";
 import AppContext from "../../AppContext";
 import { useProductData } from "../hooks/useProductData";
+import { useAllProductPages } from "../hooks/useAllProductPages";
 
 const Product = () => {
   const { userInfo, baseCurrency } = useContext(AppContext);
@@ -14,16 +15,30 @@ const Product = () => {
   const { timestamp } = state ?? {};
 
 
+  const [displayProducts, setDisplayProducts] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [detailedView, setDetailedView] = useState(false);
 
+  const {
+    products,
+    productPrices,
+    productInventories,
+    fxRates,
+    loading,
+    convertPrice,
+    productPageInfo
+  } = useProductData(baseCurrency, [timestamp]);
 
-  const { products, productPrices, productInventories, fxRates, loading, convertPrice } =
-    useProductData(baseCurrency, [timestamp]);
+  const { allProducts, isComplete: hasAllProducts } = useAllProductPages(
+    products,
+    productPageInfo,
+    baseCurrency,
+    [timestamp]
+  );
 
-  const enrichedProducts = useMemo(() => {
-    return products.map(prod => {
+  const enrichProducts = useCallback((items) => {
+    return items.map(prod => {
       const priceObj = productPrices.find(p => p.product === prod.id);
       const inv = productInventories.find(i => i.product === prod.id);
 
@@ -38,7 +53,22 @@ const Product = () => {
         inventory: inv?.total_inventory ?? 0
       };
     });
-  }, [products, productPrices, productInventories, fxRates, baseCurrency]);
+  }, [productPrices, productInventories, baseCurrency]);
+
+  const initialEnriched = useMemo(() => enrichProducts(products), [enrichProducts, products]);
+  const fullEnriched = useMemo(() => enrichProducts(allProducts), [enrichProducts, allProducts]);
+
+  useEffect(() => {
+    if (!hasAllProducts) {
+      setDisplayProducts(initialEnriched);
+    }
+  }, [initialEnriched, hasAllProducts]);
+
+  useEffect(() => {
+    if (hasAllProducts) {
+      setDisplayProducts(fullEnriched);
+    }
+  }, [fullEnriched, hasAllProducts]);
 
   // Handle edit mode navigation
   useEffect(() => {
@@ -135,11 +165,11 @@ const Product = () => {
 
       {loading ? (
         <Spinner />
-      ) : products.length === 0 ? (
+      ) : displayProducts.length === 0 ? (
         <p>No products available</p>
       ) : (
         <DataTable
-          data={enrichedProducts}
+          data={displayProducts}
           columns={columns}
           hiddenColumns={["id"]}
           width_pct={100}
