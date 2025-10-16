@@ -91,7 +91,17 @@ const ShoppingCart = () => {
       navigate(`/order-summary/${orderId}`);
     } catch (error) {
       console.error("Failed to create order:", error);
-      setFlashMessages([{ category: "danger", message: "Failed to create order. Try again." }]);
+      const backendError =
+        error.response?.data?.error ||
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        (typeof error.response?.data === "string" ? error.response.data : null);
+
+      const message = backendError
+        ? `Failed to create order: ${backendError}`
+        : `Failed to create order. ${error.message || "Please try again."}`;
+
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setSubmitting(false);
     }
