@@ -4,6 +4,7 @@ import { useApi } from "../hooks/useApi";
 import { CREATE_ORDER_BY_ADMIN_ENDPOINT, FXRATES_ENDPOINT } from "../ApiUtils/ApiEndpoints";
 import { useNavigate } from "react-router-dom";
 import DataTable from "../GenericDataComponents/DataTable";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const AdminOrderSubmit = () => {
   const { baseCurrency, flashMessages, setFlashMessages, userInfo } = useContext(AppContext);
@@ -76,7 +77,11 @@ const AdminOrderSubmit = () => {
       navigate(`/order-summary/${response.order_id}`);
     } catch (err) {
       console.error("Order submit failed", err);
-      setFlashMessages([{ category: "danger", message: "Order failed to submit." }]);
+      const backendMessage = extractApiErrorMessage(err, null);
+      const message = backendMessage
+        ? `Order failed to submit: ${backendMessage}`
+        : "Order failed to submit.";
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setSubmitting(false);
     }

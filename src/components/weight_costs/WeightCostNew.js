@@ -8,6 +8,7 @@ import {
   CREATE_UPDATE_WEIGHT_COST_ENDPOINT,
   CURRENCIES_ENDPOINT,
 } from "../ApiUtils/ApiEndpoints";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const WeightCostNew = () => {
   const { post, get } = useApi();
@@ -66,7 +67,11 @@ const WeightCostNew = () => {
       setFlashMessages([{ category: "success", message: "Weight cost created successfully." }]);
       navigate("/weight-costs", { state: { timestamp: Date.now() } });
     } catch (err) {
-      setFlashMessages([{ category: "danger", message: "Failed to create weight cost." }]);
+      const backendMessage = extractApiErrorMessage(err, null);
+      const message = backendMessage
+        ? `Failed to create weight cost: ${backendMessage}`
+        : "Failed to create weight cost.";
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setLoading(false);
     }

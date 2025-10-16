@@ -5,6 +5,7 @@ import GenericNewData from "../GenericDataComponents/GenericNewData";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
 import { CREATE_PRODUCT_ENDPOINT, CURRENCIES_ENDPOINT, CATEGORIES_ENDPOINT, BRANDS_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const ProductNew = () => {
   const { get, post } = useApi();
@@ -221,9 +222,11 @@ const ProductNew = () => {
       navigate("/products", { state: { timestamp: Date.now() } });
     } catch (error) {
       console.error("Error:", error);
-      setFlashMessages([
-        { category: "danger", message: "Failed to create product." },
-      ]);
+      const backendMessage = extractApiErrorMessage(error, null);
+      const message = backendMessage
+        ? `Failed to create product: ${backendMessage}`
+        : "Failed to create product.";
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setLoading(false);
     }

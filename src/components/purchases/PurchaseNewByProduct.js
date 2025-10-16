@@ -9,6 +9,7 @@ import {
   CURRENCIES_ENDPOINT,
   LAST_PURCHASE_PRICES_ENDPOINT,
 } from "../ApiUtils/ApiEndpoints";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const PurchaseNewByProduct = () => {
   const { get, post } = useApi();
@@ -179,9 +180,11 @@ const PurchaseNewByProduct = () => {
       navigate("/products", { state: { timestamp: Date.now() } });
     } catch (err) {
       console.error(err);
-      setFlashMessages([
-        { category: "danger", message: "Failed to create purchase." },
-      ]);
+      const backendMessage = extractApiErrorMessage(err, null);
+      const message = backendMessage
+        ? `Failed to create purchase: ${backendMessage}`
+        : "Failed to create purchase.";
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setLoading(false);
     }

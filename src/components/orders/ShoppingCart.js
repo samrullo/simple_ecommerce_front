@@ -3,6 +3,7 @@ import { useNavigate,Link } from "react-router-dom";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
 import { FXRATES_ENDPOINT,CREATE_ORDER_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const ShoppingCart = () => {
   const { baseCurrency,flashMessages,setFlashMessages } = useContext(AppContext);
@@ -91,16 +92,10 @@ const ShoppingCart = () => {
       navigate(`/order-summary/${orderId}`);
     } catch (error) {
       console.error("Failed to create order:", error);
-      const backendError =
-        error.response?.data?.error ||
-        error.response?.data?.detail ||
-        error.response?.data?.message ||
-        (typeof error.response?.data === "string" ? error.response.data : null);
-
-      const message = backendError
-        ? `Failed to create order: ${backendError}`
-        : `Failed to create order. ${error.message || "Please try again."}`;
-
+      const backendMessage = extractApiErrorMessage(error, null);
+      const message = backendMessage
+        ? `Failed to create order: ${backendMessage}`
+        : "Failed to create order.";
       setFlashMessages([{ category: "danger", message }]);
     } finally {
       setSubmitting(false);

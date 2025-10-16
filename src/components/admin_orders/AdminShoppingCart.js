@@ -7,6 +7,7 @@ import {
   CREATE_ORDER_BY_ADMIN_ENDPOINT,
   CUSTOMERS_BY_ADMIN_ENDPOINT,
 } from "../ApiUtils/ApiEndpoints";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const AdminShoppingCart = () => {
   const navigate = useNavigate();
@@ -110,7 +111,11 @@ const AdminShoppingCart = () => {
       navigate(`/admin-order-summary/${orderId}`);
     } catch (error) {
       console.error("Failed to create order:", error);
-      setFlashMessages([{ category: "danger", message: "Failed to create order. Try again." }]);
+      const backendMessage = extractApiErrorMessage(error, null);
+      const message = backendMessage
+        ? `Failed to create order: ${backendMessage}`
+        : "Failed to create order.";
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setSubmitting(false);
     }

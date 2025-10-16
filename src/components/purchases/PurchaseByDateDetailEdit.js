@@ -10,6 +10,7 @@ import {
   PRODUCTS_ENDPOINT,
   CURRENCIES_ENDPOINT,
 } from "../ApiUtils/ApiEndpoints";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const PurchaseByDateDetailEdit = () => {
   const { purchaseId, purchaseDate } = useParams();
@@ -46,8 +47,12 @@ const PurchaseByDateDetailEdit = () => {
         setSelectedCurrency({ value: data.currency?.code, label: data.currency?.name });
         setPurchaseDatetime(data.purchase_datetime);
         setHasLoaded(true);
-      }).catch(() => {
-        setFlashMessages([{ category: "danger", message: "Failed to load purchase." }]);
+      }).catch((err) => {
+        const backendMessage = extractApiErrorMessage(err, null);
+        const message = backendMessage
+          ? `Failed to load purchase: ${backendMessage}`
+          : "Failed to load purchase.";
+        setFlashMessages([{ category: "danger", message }]);
       });
     }
   }, [hasLoaded, purchaseId, setFlashMessages]);
@@ -75,7 +80,11 @@ const PurchaseByDateDetailEdit = () => {
       setFlashMessages([{ category: "success", message: "Purchase updated successfully." }]);
       navigate(`/purchases-by-date-detail/${purchaseDate}`,{ state: { timestamp: Date.now() } });
     } catch (err) {
-      setFlashMessages([{ category: "danger", message: "Update failed." }]);
+      const backendMessage = extractApiErrorMessage(err, null);
+      const message = backendMessage
+        ? `Update failed: ${backendMessage}`
+        : "Update failed.";
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setLoading(false);
     }
@@ -87,7 +96,11 @@ const PurchaseByDateDetailEdit = () => {
       setFlashMessages([{ category: "success", message: "Purchase deleted." }]);
       navigate(`/purchases-by-date-detail/${purchaseDate}`,{ state: { timestamp: Date.now() } });
     } catch (err) {
-      setFlashMessages([{ category: "danger", message: "Deletion failed." }]);
+      const backendMessage = extractApiErrorMessage(err, null);
+      const message = backendMessage
+        ? `Deletion failed: ${backendMessage}`
+        : "Deletion failed.";
+      setFlashMessages([{ category: "danger", message }]);
     }
   };
 

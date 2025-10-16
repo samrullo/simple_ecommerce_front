@@ -7,6 +7,7 @@ import {
     FXRATES_ENDPOINT, CREATE_UPDATE_FXRATES_ENDPOINT
 } from "../ApiUtils/ApiEndpoints";
 import GenericEditData from "../GenericDataComponents/GenericEditData";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const FXRateEdit = () => {
     const { fxRateId } = useParams();
@@ -65,7 +66,11 @@ const FXRateEdit = () => {
             setFlashMessages([{ category: "success", message: "FX rate updated successfully." }]);
             navigate("/fxrates", { state: { timestamp: Date.now() } }); // go back to fx list
         } catch (err) {
-            setFlashMessages([{ category: "danger", message: "Failed to update FX rate." }]);
+            const backendMessage = extractApiErrorMessage(err, null);
+            const message = backendMessage
+                ? `Failed to update FX rate: ${backendMessage}`
+                : "Failed to update FX rate.";
+            setFlashMessages([{ category: "danger", message }]);
         } finally {
             setLoading(false);
         }

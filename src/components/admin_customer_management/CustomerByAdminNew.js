@@ -4,6 +4,7 @@ import GenericNewData from "../GenericDataComponents/GenericNewData";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
 import { CUSTOMERS_BY_ADMIN_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const CustomerByAdminNew = () => {
   const { post } = useApi();
@@ -62,7 +63,11 @@ const CustomerByAdminNew = () => {
       setFlashMessages([{ category: "success", message: "Customer created successfully." }]);
       navigate("/admin-customers", { state: { timestamp: Date.now() } });
     } catch (err) {
-      setFlashMessages([{ category: "danger", message: "Failed to create customer." }]);
+      const backendMessage = extractApiErrorMessage(err, null);
+      const message = backendMessage
+        ? `Failed to create customer: ${backendMessage}`
+        : "Failed to create customer.";
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setLoading(false);
     }

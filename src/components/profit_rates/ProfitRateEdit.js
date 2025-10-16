@@ -8,6 +8,7 @@ import {
   ACTIVE_PROFIT_RATE_ENDPOINT,
   CREATE_UPDATE_PROFIT_RATE_ENDPOINT,
 } from "../ApiUtils/ApiEndpoints";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const ProfitRateEdit = () => {
   const { get, post } = useApi();
@@ -49,8 +50,12 @@ const ProfitRateEdit = () => {
       await post(CREATE_UPDATE_PROFIT_RATE_ENDPOINT, form, true);
       setFlashMessages([{ category: "success", message: "Profit rate updated successfully." }]);
       navigate("/profit-rates", { state: { timestamp: Date.now() } });
-    } catch {
-      setFlashMessages([{ category: "danger", message: "Failed to update profit rate." }]);
+    } catch (err) {
+      const backendMessage = extractApiErrorMessage(err, null);
+      const message = backendMessage
+        ? `Failed to update profit rate: ${backendMessage}`
+        : "Failed to update profit rate.";
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setLoading(false);
     }

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AppContext from "../../AppContext";
 import GenericNewData from "../GenericDataComponents/GenericNewData";
 import { PASSWORD_RESET_REQUEST_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -23,11 +24,18 @@ const ForgotPassword = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Forgot password error:", errorData);
-        setFlashMessages([
-          { category: "danger", message: "Failed to send reset email." },
-        ]);
+        let errorData = null;
+        try {
+          errorData = await response.json();
+        } catch (parseError) {
+          console.error("Forgot password error (unable to parse JSON):", parseError);
+        }
+        console.error("Forgot password error:", errorData || response.statusText);
+        const message = extractApiErrorMessage(
+          { response: { data: errorData } },
+          "Failed to send reset email."
+        );
+        setFlashMessages([{ category: "danger", message }]);
         setLoading(false);
         return;
       }
@@ -41,9 +49,8 @@ const ForgotPassword = () => {
       navigate("/login");
     } catch (error) {
       console.error("Unexpected error:", error);
-      setFlashMessages([
-        { category: "danger", message: `Unexpected error: ${error}` },
-      ]);
+      const message = extractApiErrorMessage(error, "Unexpected error while sending reset email.");
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setLoading(false); // ✅ always stop loading
     }

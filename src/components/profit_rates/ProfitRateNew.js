@@ -5,6 +5,7 @@ import GenericNewData from "../GenericDataComponents/GenericNewData";
 import AppContext from "../../AppContext";
 import { useApi } from "../hooks/useApi";
 import { CREATE_UPDATE_PROFIT_RATE_ENDPOINT } from "../ApiUtils/ApiEndpoints";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const ProfitRateNew = () => {
   const { post } = useApi();
@@ -33,8 +34,12 @@ const ProfitRateNew = () => {
       await post(CREATE_UPDATE_PROFIT_RATE_ENDPOINT, form, true);
       setFlashMessages([{ category: "success", message: "Profit rate created successfully." }]);
       navigate("/profit-rates", { state: { timestamp: Date.now() } });
-    } catch {
-      setFlashMessages([{ category: "danger", message: "Failed to create profit rate." }]);
+    } catch (err) {
+      const backendMessage = extractApiErrorMessage(err, null);
+      const message = backendMessage
+        ? `Failed to create profit rate: ${backendMessage}`
+        : "Failed to create profit rate.";
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setLoading(false);
     }

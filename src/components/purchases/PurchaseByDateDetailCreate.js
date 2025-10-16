@@ -18,6 +18,7 @@ import {
   CUSTOMERS_BY_ADMIN_ENDPOINT,
   CREATE_PURCHASE_ORDER_ENDPOINT, // <-- define in ApiEndpoints.js
 } from "../ApiUtils/ApiEndpoints";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const PurchaseByDateDetailCreate = () => {
   const { get, post } = useApi();
@@ -337,7 +338,11 @@ const PurchaseByDateDetailCreate = () => {
       navigate(`/purchases-by-date-detail/${purchaseDate}`, { state: { timestamp: Date.now() } });
     } catch (err) {
       console.error("Error creating purchase/order:", err);
-      setFlashMessages([{ category: "danger", message: "Failed to create purchase/order." }]);
+      const backendMessage = extractApiErrorMessage(err, null);
+      const message = backendMessage
+        ? `Failed to create purchase/order: ${backendMessage}`
+        : "Failed to create purchase/order.";
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setLoading(false);
     }

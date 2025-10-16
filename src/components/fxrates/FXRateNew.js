@@ -8,6 +8,7 @@ import {
   CREATE_UPDATE_FXRATES_ENDPOINT,
 } from "../ApiUtils/ApiEndpoints";
 import GenericEditData from "../GenericDataComponents/GenericEditData";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 const FXRateNew = () => {
   const { get, post } = useApi();
@@ -61,9 +62,11 @@ const FXRateNew = () => {
       ]);
       navigate("/fxrates", { state: { timestamp: Date.now() } });
     } catch (err) {
-      setFlashMessages([
-        { category: "danger", message: "Failed to create FX rate." },
-      ]);
+      const backendMessage = extractApiErrorMessage(err, null);
+      const message = backendMessage
+        ? `Failed to create FX rate: ${backendMessage}`
+        : "Failed to create FX rate.";
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setLoading(false);
     }

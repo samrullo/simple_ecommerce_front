@@ -7,6 +7,7 @@ import {
   PURCHASES_ENDPOINT,
   UPDATE_PURCHASE_ENDPOINT, PRODUCTS_ENDPOINT, CURRENCIES_ENDPOINT
 } from "../ApiUtils/ApiEndpoints";
+import extractApiErrorMessage from "../../utils/extractApiErrorMessage";
 
 
 const PurchaseEdit = () => {
@@ -69,9 +70,11 @@ const PurchaseEdit = () => {
         setPurchaseDatetime(data.purchase_datetime);
         setHasLoaded(true);
       } catch (err) {
-        setFlashMessages([
-          { category: "danger", message: "Failed to load purchase." },
-        ]);
+        const backendMessage = extractApiErrorMessage(err, null);
+        const message = backendMessage
+          ? `Failed to load purchase: ${backendMessage}`
+          : "Failed to load purchase.";
+        setFlashMessages([{ category: "danger", message }]);
       }
     };
 
@@ -136,15 +139,11 @@ const PurchaseEdit = () => {
       ]);
       navigate("/purchases", { state: { timestamp: Date.now() } });
     } catch (error) {
-      const backendMessage =
-        error.response?.data?.detail ||
-        error.response?.data?.message ||
-        JSON.stringify(error.response?.data) ||
-        "Update failed.";
-
-      setFlashMessages([
-        { category: "danger", message: `Update failed: ${backendMessage}` },
-      ]);
+      const backendMessage = extractApiErrorMessage(error, null);
+      const message = backendMessage
+        ? `Update failed: ${backendMessage}`
+        : "Update failed.";
+      setFlashMessages([{ category: "danger", message }]);
     } finally {
       setLoading(false);
     }
@@ -158,15 +157,11 @@ const PurchaseEdit = () => {
       ]);
       navigate("/purchases", { state: { timestamp: Date.now() } });
     } catch (error) {
-      const backendMessage =
-        error.response?.data?.detail ||
-        error.response?.data?.message ||
-        JSON.stringify(error.response?.data) ||
-        "Deletion failed.";
-
-      setFlashMessages([
-        { category: "danger", message: `Deletion failed: ${backendMessage}` },
-      ]);
+      const backendMessage = extractApiErrorMessage(error, null);
+      const message = backendMessage
+        ? `Deletion failed: ${backendMessage}`
+        : "Deletion failed.";
+      setFlashMessages([{ category: "danger", message }]);
     }
   };
 
