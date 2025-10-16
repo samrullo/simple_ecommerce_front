@@ -263,6 +263,14 @@ const ProductEdit = () => {
   };
 
   const handleDelete = async () => {
+    const confirmed = window.confirm(
+      "Deleting this product will also remove all related prices, images, inventories, purchases, and orders. This action cannot be undone. Do you want to continue?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
       await del(`${PRODUCTS_ENDPOINT}${productId}/`, true);
       setFlashMessages([{ category: "success", message: "Product deleted." }]);
